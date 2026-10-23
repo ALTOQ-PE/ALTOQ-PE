@@ -519,7 +519,7 @@ function PerfilContent() {
                   <div>
                     <div className="flex justify-between items-center">
                       <h3 className="font-extrabold text-xs text-brand-primary">Plan Gratuito</h3>
-                      <span className="font-bold text-xs text-gray-700">$0 / mes</span>
+                      <span className="font-bold text-xs text-gray-700">$0 / mes (15 dias de prueba)</span>
                     </div>
                     <ul className="text-[11px] text-gray-600 space-y-1.5 mt-2.5">
                       <li className="flex items-center space-x-1.5">

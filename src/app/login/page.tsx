@@ -727,7 +727,7 @@ function LoginFormContent() {
                       <div>
                         <div className="flex justify-between items-center">
                           <h4 className="font-extrabold text-xs text-brand-primary">Plan Gratuito</h4>
-                          <span className="font-bold text-xs text-gray-700">$0 / mes</span>
+                          <span className="font-bold text-xs text-gray-700">$7 / mes (15 dias de prueba)</span>
                         </div>
                         <ul className="text-[11px] text-gray-600 space-y-1.5 mt-3">
                           <li className="flex items-start space-x-1.5">
