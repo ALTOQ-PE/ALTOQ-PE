@@ -32,7 +32,11 @@ export type OrderStatus =
   | 'ENTREGADO'
   | 'CANCELADO';
 
-export type PaymentMethod = 'YAPE_PLIN' | 'TARJETA_CULQI' | 'ALTOQ_CREDITS';
+export type PaymentMethod =
+  | 'YAPE_PLIN'
+  | 'TARJETA_CULQI'
+  | 'ALTOQ_CREDITS'
+  | 'TRANSFERENCIA_BCP';
 
 export type BillingDocType = 'DNI' | 'RUC';
 
@@ -91,6 +95,21 @@ export interface CatalogProduct {
   octagonCount: number; // Restriccion estricta: 0 <= octagonCount <= 2
   octagonTypes: string[];
   healthPolicyAccepted: boolean;
+  galleryPhotos?: string[];
+  rating?: number;
+  reviewCount?: number;
+  reviews?: ProductReview[];
+}
+
+export interface ProductReview {
+  id: string;
+  userName: string;
+  userRole?: string;
+  rating: number; // 1 a 5
+  date: string;
+  verifiedPurchase: boolean;
+  title: string;
+  comment: string;
 }
 
 // Interfaz para Perfil de Consumidor Minorista

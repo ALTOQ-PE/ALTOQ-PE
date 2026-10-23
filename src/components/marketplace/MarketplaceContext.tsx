@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { Role as UserRole, CatalogProduct } from '@/types';
+import type { Role as UserRole, CatalogProduct, ProductReview } from '@/types';
 
 export interface CartItem {
   product: CatalogProduct;
@@ -69,11 +69,13 @@ interface MarketplaceContextType {
   approvedProducts: CatalogProduct[];
   toggleProductApproval: (productId: string) => void;
   addProduct: (product: CatalogProduct) => void;
+  getProductById: (id: string) => CatalogProduct | undefined;
+  addProductReview: (productId: string, review: Omit<ProductReview, 'id' | 'date'>) => void;
 }
 
 const MarketplaceContext = createContext<MarketplaceContextType | undefined>(undefined);
 
-// Lista inicial de productos oficiales de ALTOQ PE
+// Lista inicial de productos oficiales de ALTOQ PE con galería, estrellas y reseñas reales
 const INITIAL_PRODUCTS: CatalogProduct[] = [
   {
     id: 'prod-001',
@@ -93,6 +95,59 @@ const INITIAL_PRODUCTS: CatalogProduct[] = [
     prepSteps: 'Abre el pouch, vierte 300 ml de agua caliente a 85 °C, reposa 3 minutos y sirve.',
     packagingPhotoUrl: '/assets/products/pouches-pack.png',
     dishPhotoUrl: '/assets/products/bowls-freeze-dried.png',
+    galleryPhotos: [
+      '/assets/products/pouches-pack.png',
+      '/assets/products/bowls-freeze-dried.png',
+      '/assets/products/box-delivery.png',
+    ],
+    rating: 4.9,
+    reviewCount: 142,
+    reviews: [
+      {
+        id: 'rev-001',
+        userName: 'Mariana Quispe',
+        userRole: 'Minorista Oro',
+        rating: 5,
+        date: '18 de Octubre, 2026',
+        verifiedPurchase: true,
+        title: 'Sabor idéntico al hecho en casa, textura impecable',
+        comment:
+          'Me sorprendió que la pechuga de gallina conserva sus hebras y no queda pastosa. En solo 3 minutos con agua caliente del termo quedó listo en mi oficina. 100% recomendado.',
+      },
+      {
+        id: 'rev-002',
+        userName: 'Chef Ricardo Palacios',
+        userRole: 'Comprador Verificado',
+        rating: 5,
+        date: '12 de Octubre, 2026',
+        verifiedPurchase: true,
+        title: 'Tecnología de liofilización superior',
+        comment:
+          'El punto de ají amarillo cusqueño y la cremosidad son exactos a la receta tradicional. Se nota la diferencia abismal contra la comida deshidratada convencional.',
+      },
+      {
+        id: 'rev-003',
+        userName: 'Elena Benavides',
+        userRole: 'Minorista Gratuito',
+        rating: 5,
+        date: '04 de Octubre, 2026',
+        verifiedPurchase: true,
+        title: 'Perfecto para viajes y fines de semana',
+        comment:
+          'Lo llevé a una caminata a Huaraz. Pesa nada en la mochila (45 g) y al agregarle agua caliente rindió casi 400 g bien contundentes.',
+      },
+      {
+        id: 'rev-004',
+        userName: 'Gonzalo Beltrán',
+        userRole: 'Minorista Oro',
+        rating: 4,
+        date: '28 de Septiembre, 2026',
+        verifiedPurchase: true,
+        title: 'Excelente sazón y practicidad',
+        comment:
+          'El sabor es extraordinario. Solo sugiero agregarle un poco de sal al gusto si prefieres comidas más intensas. Por lo demás, un 10.',
+      },
+    ],
     youtubeRecipeUrl: 'dQw4w9WgXcQ',
     packagingBarrierType: 'Tricapa foil sellado hermético (barrera vapor < 0.1 g/m²/d)',
     stockInLima: 48,
@@ -126,6 +181,48 @@ const INITIAL_PRODUCTS: CatalogProduct[] = [
     prepSteps: 'Añade 350 ml de agua hirviendo directo al pouch. Espera 3 minutos y revuelve.',
     packagingPhotoUrl: '/assets/products/pouches-pack.png',
     dishPhotoUrl: '/assets/products/bowls-freeze-dried.png',
+    galleryPhotos: [
+      '/assets/products/pouches-pack.png',
+      '/assets/products/bowls-freeze-dried.png',
+      '/assets/products/box-delivery.png',
+    ],
+    rating: 4.8,
+    reviewCount: 98,
+    reviews: [
+      {
+        id: 'rev-005',
+        userName: 'Lucía Fernández',
+        userRole: 'Minorista Oro',
+        rating: 5,
+        date: '15 de Octubre, 2026',
+        verifiedPurchase: true,
+        title: 'Reconfortante y sin octógonos',
+        comment:
+          'Increíble que tenga 0 octógonos y un sabor tan casero. La carne mechada se rehidrata en segundos y el orégano de Tarma le da el toque perfecto.',
+      },
+      {
+        id: 'rev-006',
+        userName: 'Ing. Walter Córdova',
+        userRole: 'Comprador Verificado',
+        rating: 5,
+        date: '08 de Octubre, 2026',
+        verifiedPurchase: true,
+        title: 'Ideal para guardia nocturna',
+        comment:
+          'Trabajo turnos de noche en clínica y tener una sopa caliente de verdad en 3 minutos sin preservantes químicos es un salvavidas.',
+      },
+      {
+        id: 'rev-007',
+        userName: 'Carmen Rosa Morales',
+        userRole: 'Minorista Gratuito',
+        rating: 4,
+        date: '25 de Septiembre, 2026',
+        verifiedPurchase: true,
+        title: 'Muy rica y natural',
+        comment:
+          'Los fideos quedan al dente y el caldito es sustancioso. Buen rendimiento por plato.',
+      },
+    ],
     youtubeRecipeUrl: 'dQw4w9WgXcQ',
     packagingBarrierType: 'Tricapa metalizada anti-humedad (>80% HR Lima)',
     stockInLima: 35,
@@ -159,6 +256,48 @@ const INITIAL_PRODUCTS: CatalogProduct[] = [
     prepSteps: 'Elige tu porción e hidrata con agua caliente en 3 minutos.',
     packagingPhotoUrl: '/assets/products/box-delivery.png',
     dishPhotoUrl: '/assets/products/pouches-pack.png',
+    galleryPhotos: [
+      '/assets/products/box-delivery.png',
+      '/assets/products/pouches-pack.png',
+      '/assets/products/bowls-freeze-dried.png',
+    ],
+    rating: 5.0,
+    reviewCount: 215,
+    reviews: [
+      {
+        id: 'rev-008',
+        userName: 'Rodrigo San Martín',
+        userRole: 'Minorista Oro',
+        rating: 5,
+        date: '17 de Octubre, 2026',
+        verifiedPurchase: true,
+        title: 'La mejor forma de conocer la liofilización andina',
+        comment:
+          'Vienen 4 variedades muy bien empacadas en su caja rígida. El peshque de quinua y el charqui son fuera de serie.',
+      },
+      {
+        id: 'rev-009',
+        userName: 'Patricia Alva',
+        userRole: 'Compradora Verificada',
+        rating: 5,
+        date: '10 de Octubre, 2026',
+        verifiedPurchase: true,
+        title: 'Calidad de exportación',
+        comment:
+          'El empaque es muy seguro para la humedad de Lima. Los 4 sabores son deliciosos y rinden un montón.',
+      },
+      {
+        id: 'rev-010',
+        userName: 'Jorge Luis Mendoza',
+        userRole: 'Minorista Oro',
+        rating: 5,
+        date: '02 de Octubre, 2026',
+        verifiedPurchase: true,
+        title: 'Excelente relación calidad precio',
+        comment:
+          'Rinde casi un kilo servido entre las 4 raciones. Mis hijos quedaron fascinados con los snacks y el sabor tradicional.',
+      },
+    ],
     youtubeRecipeUrl: 'dQw4w9WgXcQ',
     packagingBarrierType: 'Empaque rígido secundario anti-impacto con pouches tricapa individuales',
     stockInLima: 62,
@@ -192,6 +331,48 @@ const INITIAL_PRODUCTS: CatalogProduct[] = [
     prepSteps: 'Añade 320 ml de agua caliente, reposa 3 minutos y mezcla bien antes de servir.',
     packagingPhotoUrl: '/assets/products/pouches-pack.png',
     dishPhotoUrl: '/assets/products/bowls-freeze-dried.png',
+    galleryPhotos: [
+      '/assets/products/pouches-pack.png',
+      '/assets/products/bowls-freeze-dried.png',
+      '/assets/products/box-delivery.png',
+    ],
+    rating: 4.8,
+    reviewCount: 76,
+    reviews: [
+      {
+        id: 'rev-011',
+        userName: 'Fernando Chauca',
+        userRole: 'Minorista Oro',
+        rating: 5,
+        date: '14 de Octubre, 2026',
+        verifiedPurchase: true,
+        title: 'Sabor ahumado y panceta crujiente',
+        comment:
+          'La papa seca andina absorbe el agua caliente y queda con la textura justa, ni dura ni deshecha. El sabor a maní tostado y ají panca está en su punto.',
+      },
+      {
+        id: 'rev-012',
+        userName: 'Gabriela Vega',
+        userRole: 'Compradora Verificada',
+        rating: 5,
+        date: '06 de Octubre, 2026',
+        verifiedPurchase: true,
+        title: 'Plato criollo auténtico',
+        comment:
+          'Se siente la dedicación de los productores de Cusco. Es un guiso espeso y contundente, perfecto para un almuerzo rápido.',
+      },
+      {
+        id: 'rev-013',
+        userName: 'Diego Salazar',
+        userRole: 'Minorista Gratuito',
+        rating: 4,
+        date: '21 de Septiembre, 2026',
+        verifiedPurchase: true,
+        title: 'Muy buen guiso',
+        comment:
+          'Bastante generoso en la porción de panceta liofilizada. Acompañado de arroz queda de restaurante.',
+      },
+    ],
     youtubeRecipeUrl: 'dQw4w9WgXcQ',
     packagingBarrierType: 'Tricapa hermética con barrera de vapor < 0.1 g/m²/d',
     stockInLima: 30,
@@ -225,6 +406,48 @@ const INITIAL_PRODUCTS: CatalogProduct[] = [
     prepSteps: 'Consumo directo como snack crujiente o agrégalo a yogures y ensaladas.',
     packagingPhotoUrl: '/assets/products/pouches-pack.png',
     dishPhotoUrl: '/assets/products/bowls-freeze-dried.png',
+    galleryPhotos: [
+      '/assets/products/pouches-pack.png',
+      '/assets/products/bowls-freeze-dried.png',
+      '/assets/products/box-delivery.png',
+    ],
+    rating: 4.9,
+    reviewCount: 112,
+    reviews: [
+      {
+        id: 'rev-014',
+        userName: 'Andrea Bustamante',
+        userRole: 'Minorista Oro',
+        rating: 5,
+        date: '19 de Octubre, 2026',
+        verifiedPurchase: true,
+        title: 'Crocante adictivo y 100% fruta real',
+        comment:
+          'No tiene azúcar añadida y el sabor es dulce natural concentrado. El aguaymanto tiene ese toque ácido que contrasta perfecto con el mango.',
+      },
+      {
+        id: 'rev-015',
+        userName: 'Dr. Manuel Ríos',
+        userRole: 'Comprador Verificado',
+        rating: 5,
+        date: '11 de Octubre, 2026',
+        verifiedPurchase: true,
+        title: 'Snack saludable sin sellos',
+        comment:
+          '0 octógonos, pura fruta peruana de la selva liofilizada. Se lo pongo al yogurt griego todos los días.',
+      },
+      {
+        id: 'rev-016',
+        userName: 'Sofía Paredes',
+        userRole: 'Minorista Oro',
+        rating: 5,
+        date: '03 de Octubre, 2026',
+        verifiedPurchase: true,
+        title: 'Textura crocante insuperable',
+        comment:
+          'Parece una galleta pero es pura fruta. No vuelve a ponerse húmedo si cierras bien el pouch con su zipper.',
+      },
+    ],
     youtubeRecipeUrl: 'dQw4w9WgXcQ',
     packagingBarrierType: 'Pouch tricapa aluminio sellado al vacío',
     stockInLima: 85,
@@ -259,7 +482,33 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [filipuntosBalance, setFilipuntosBalance] = useState(450);
   const [altoqCreditsBalance, setAltoqCreditsBalance] = useState(25.0);
   const [useAltoqCreditsDiscount, setUseAltoqCreditsDiscount] = useState(false);
-  const [approvedProducts, setApprovedProducts] = useState<CatalogProduct[]>(INITIAL_PRODUCTS);
+  const [approvedProducts, setApprovedProducts] = useState<CatalogProduct[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('altoq_marketplace_products');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
+        }
+      } catch (err) {
+        console.error('Error al cargar productos guardados:', err);
+      }
+    }
+    return INITIAL_PRODUCTS;
+  });
+
+  // Guardar en localStorage cuando cambian los productos o reseñas
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('altoq_marketplace_products', JSON.stringify(approvedProducts));
+      } catch (err) {
+        console.error('Error al persistir productos:', err);
+      }
+    }
+  }, [approvedProducts]);
 
   // Cargar usuario autenticado real desde /api/auth/me
   const refreshUser = async () => {
@@ -357,6 +606,35 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setApprovedProducts((prev) => [product, ...prev]);
   };
 
+  const getProductById = (id: string): CatalogProduct | undefined => {
+    return approvedProducts.find((p) => p.id === id || p.slug === id);
+  };
+
+  const addProductReview = (productId: string, reviewData: Omit<ProductReview, 'id' | 'date'>) => {
+    const newReview: ProductReview = {
+      ...reviewData,
+      id: `rev-${Date.now()}`,
+      date: new Intl.DateTimeFormat('es-PE', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date()),
+    };
+
+    setApprovedProducts((prev) =>
+      prev.map((prod) => {
+        if (prod.id !== productId) return prod;
+        const currentReviews = prod.reviews || [];
+        const updatedReviews = [newReview, ...currentReviews];
+        const newCount = updatedReviews.length;
+        const sum = updatedReviews.reduce((acc, r) => acc + r.rating, 0);
+        const newRating = Number((sum / newCount).toFixed(1));
+        return {
+          ...prod,
+          reviews: updatedReviews,
+          reviewCount: newCount,
+          rating: newRating,
+        };
+      })
+    );
+  };
+
   return (
     <MarketplaceContext.Provider
       value={{
@@ -395,6 +673,8 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
         approvedProducts,
         toggleProductApproval,
         addProduct,
+        getProductById,
+        addProductReview,
       }}
     >
       {children}

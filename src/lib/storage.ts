@@ -175,12 +175,13 @@ function readDb(): DatabaseContent {
     if (fs.existsSync(DATA_FILE)) {
       const raw = fs.readFileSync(DATA_FILE, 'utf-8');
       const parsed = JSON.parse(raw);
-      memoryDb = {
+      const loaded: DatabaseContent = {
         users: parsed.users && parsed.users.length > 0 ? parsed.users : DEFAULT_DB.users,
         orders: parsed.orders || [],
         quotes: parsed.quotes || [],
       };
-      return memoryDb;
+      memoryDb = loaded;
+      return loaded;
     }
 
     try {
@@ -189,12 +190,14 @@ function readDb(): DatabaseContent {
       // Entorno de solo lectura
     }
 
-    memoryDb = JSON.parse(JSON.stringify(DEFAULT_DB));
-    return memoryDb;
+    const fallback: DatabaseContent = JSON.parse(JSON.stringify(DEFAULT_DB));
+    memoryDb = fallback;
+    return fallback;
   } catch (error) {
     console.error('Error leyendo base de datos local:', error);
-    memoryDb = JSON.parse(JSON.stringify(DEFAULT_DB));
-    return memoryDb;
+    const fallback: DatabaseContent = JSON.parse(JSON.stringify(DEFAULT_DB));
+    memoryDb = fallback;
+    return fallback;
   }
 }
 

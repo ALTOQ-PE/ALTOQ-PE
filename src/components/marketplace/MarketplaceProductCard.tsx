@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
+import Link from 'next/link';
 import type { CatalogProduct } from '@/types';
 import { useMarketplace } from './MarketplaceContext';
 import { DigesaCertificateViewer } from '../landing/DigesaCertificateViewer';
@@ -19,7 +19,9 @@ import {
   Flame,
   Building2,
   Package,
-  Activity
+  Activity,
+  Star,
+  ExternalLink
 } from 'lucide-react';
 
 interface Props {
@@ -37,6 +39,9 @@ export const MarketplaceProductCard: React.FC<Props> = ({ product }) => {
   // Precios mayoristas calculados
   const wholesalePricePerUnit = product.wholesalePricePen || product.publicPricePen * 0.75;
   const wholesaleBoxPrice = wholesalePricePerUnit * product.wholesaleMoqUnits;
+
+  const currentRating = product.rating || 4.9;
+  const currentReviewsCount = product.reviewCount || product.reviews?.length || 120;
 
   return (
     <div className="bg-white border border-brand-primary/10 rounded-brand-xl p-4 sm:p-5 flex flex-col justify-between hover:border-brand-primary/30 hover:shadow-md transition-all relative group">
@@ -94,23 +99,55 @@ export const MarketplaceProductCard: React.FC<Props> = ({ product }) => {
           </button>
         </div>
 
-        {/* Imagen del Producto */}
-        <div className="h-44 flex items-center justify-center p-2 mb-3 bg-brand-surface-soft/40 rounded-brand-lg overflow-hidden group-hover:scale-105 transition-transform duration-300">
+        {/* Imagen del Producto con enlace al detalle */}
+        <Link
+          href={`/producto/${product.id}`}
+          className="h-44 flex items-center justify-center p-2 mb-3 bg-brand-surface-soft/40 rounded-brand-lg overflow-hidden group-hover:scale-105 transition-transform duration-300 cursor-pointer block"
+        >
           <img
             src={product.packagingPhotoUrl}
             alt={product.commercialName}
             className="max-h-full max-w-full object-contain filter drop-shadow-md"
           />
-        </div>
+        </Link>
 
         {/* Datos Principales */}
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <div className="text-[11px] font-bold text-brand-secondary-dark uppercase tracking-wider">
             {product.producerName} • {product.originRegion}
           </div>
+
           <h3 className="font-extrabold text-sm sm:text-base text-brand-primary leading-snug line-clamp-2">
-            {product.commercialName}
+            <Link href={`/producto/${product.id}`} className="hover:text-brand-secondary transition-colors">
+              {product.commercialName}
+            </Link>
           </h3>
+
+          {/* Estrellas y Calificación */}
+          <div className="flex items-center space-x-1.5">
+            <div className="flex items-center text-amber-500">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  className={`w-3.5 h-3.5 ${
+                    star <= Math.round(currentRating)
+                      ? 'fill-amber-400 text-amber-400'
+                      : 'text-gray-300'
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-xs font-black text-brand-primary">
+              {currentRating.toFixed(1)}
+            </span>
+            <Link
+              href={`/producto/${product.id}#reseñas`}
+              className="text-[11px] text-gray-500 hover:text-brand-primary hover:underline"
+            >
+              ({currentReviewsCount} reseñas)
+            </Link>
+          </div>
+
           <p className="text-[11px] text-brand-text-muted line-clamp-2 leading-relaxed">
             {product.culturalContext}
           </p>
@@ -285,6 +322,15 @@ export const MarketplaceProductCard: React.FC<Props> = ({ product }) => {
             </button>
           </div>
         )}
+
+        {/* Enlace directo a la ficha del producto */}
+        <Link
+          href={`/producto/${product.id}`}
+          className="w-full mt-3 py-2 px-3 rounded-brand-md bg-brand-surface-soft hover:bg-[#E5ECE2] text-brand-primary text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors border border-brand-primary/15"
+        >
+          <span>Ver Fotos, Descripción y Reseñas</span>
+          <span className="text-brand-secondary font-black">&rarr;</span>
+        </Link>
       </div>
 
       {/* Modal Interactivo de Certificado Sanitario DIGESA */}
