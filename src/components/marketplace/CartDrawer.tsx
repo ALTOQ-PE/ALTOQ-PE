@@ -821,7 +821,7 @@ export const CartDrawer: React.FC = () => {
                       className="flex-1 py-3 rounded-brand-md bg-brand-primary text-white font-extrabold text-xs hover:bg-brand-primary-light transition-colors flex items-center justify-center space-x-2 shadow-sm"
                     >
                       <span>
-                        Simular y Pagar S/ {totalPen.toFixed(2)} ({selectedMethod === 'YAPE_PLIN' ? 'Yape' : selectedMethod === 'TARJETA_CULQI' ? 'Tarjeta' : 'BCP'})
+                        Pagar S/ {totalPen.toFixed(2)} ({selectedMethod === 'YAPE_PLIN' ? 'Yape' : selectedMethod === 'TARJETA_CULQI' ? 'Tarjeta' : 'BCP'})
                       </span>
                       <Check className="w-4 h-4" />
                     </button>

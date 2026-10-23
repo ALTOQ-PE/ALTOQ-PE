@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { AltoqLogo } from '@/components/ui/AltoqLogo';
 import { ShieldAlert, Activity, CheckSquare, Layers, LineChart, Banknote, Warehouse } from 'lucide-react';
 
 export default function SuperAdminLayout({
@@ -41,12 +42,10 @@ export default function SuperAdminLayout({
       <header className="sticky top-0 z-40 bg-[#0E241C] border-b border-emerald-800/40 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-6">
-            <Link href="/superadmin" className="flex items-center space-x-2">
-              <span className="font-extrabold text-2xl tracking-tight text-white">
-                ALTOQ<span className="text-emerald-400">.ADMIN</span>
-              </span>
+            <Link href="/" className="flex items-center space-x-2.5 transition-opacity hover:opacity-90">
+              <AltoqLogo variant="light" width={155} height={38} />
               <span className="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 uppercase tracking-widest border border-emerald-500/30">
-                Gobernanza Total
+                Gobernanza
               </span>
             </Link>
 

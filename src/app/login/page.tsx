@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { Role as UserRole, PaymentMethod } from '@/types';
+import { AltoqLogo } from '@/components/ui/AltoqLogo';
 import {
   ShoppingBag,
   Building2,
@@ -158,13 +159,8 @@ function LoginFormContent() {
       <div className="max-w-2xl w-full bg-white rounded-brand-xl shadow-2xl border border-brand-primary/10 overflow-hidden">
         {/* Cabecera de Marca */}
         <div className="bg-[#0F3D2E] text-white p-6 sm:p-7 text-center space-y-2">
-          <Link href="/" className="inline-block">
-            <span className="font-black text-3xl tracking-tight">
-              ALTOQ<span className="text-[#D85A2F]">.PE</span>
-            </span>
-            <span className="block text-[9px] font-extrabold uppercase tracking-[0.25em] text-[#8BAA52]">
-              FOOD TECHNOLOGY
-            </span>
+          <Link href="/" className="inline-block transition-opacity hover:opacity-90" aria-label="ALTOQ PE - Ir a Inicio">
+            <AltoqLogo variant="light" width={220} height={52} />
           </Link>
           <p className="text-xs text-emerald-100 max-w-md mx-auto leading-relaxed">
             Marketplace Oficial de Alimentos Liofilizados del Perú • Inicia sesión o regístrate para acceder al catálogo personalizado

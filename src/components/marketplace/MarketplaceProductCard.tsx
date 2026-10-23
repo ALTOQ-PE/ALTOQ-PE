@@ -218,23 +218,15 @@ export const MarketplaceProductCard: React.FC<Props> = ({ product }) => {
                 <span>Agregar al Carrito</span>
               </button>
 
-              {consumerPlan === 'PLAN_ORO' && product.youtubeRecipeUrl ? (
+              {product.youtubeRecipeUrl && (
                 <button
                   type="button"
                   onClick={() => setIsVideoModalOpen(true)}
-                  className="p-2.5 rounded-brand-md bg-amber-100 text-amber-900 hover:bg-amber-200 transition-colors"
-                  title="Ver Receta Express en Video (3 min)"
+                  className="p-2.5 rounded-brand-md bg-emerald-50 text-brand-primary hover:bg-emerald-100 transition-colors"
+                  title="Ver Preparación Express en Video (3 min)"
+                  aria-label="Ver Preparación Express en Video"
                 >
-                  <Video className="w-4 h-4 text-amber-800" />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => alert('Las recetas express en video de 3 minutos son exclusivas para miembros de Plan Oro.')}
-                  className="p-2.5 rounded-brand-md bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
-                  title="Receta Express disponible en Plan Oro"
-                >
-                  <Video className="w-4 h-4" />
+                  <Video className="w-4 h-4 text-brand-primary" />
                 </button>
               )}
             </div>

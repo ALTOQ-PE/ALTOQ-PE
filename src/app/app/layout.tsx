@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { AltoqLogo } from '@/components/ui/AltoqLogo';
 import { ShoppingBag, Award, ShieldCheck, Heart, User } from 'lucide-react';
 
 export default function RetailConsumerLayout({
@@ -35,11 +36,9 @@ export default function RetailConsumerLayout({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Logo y Enlace */}
           <div className="flex items-center space-x-6">
-            <Link href="/app" className="flex items-center space-x-2">
-              <span className="font-extrabold text-2xl tracking-tight text-brand-primary">
-                ALTOQ<span className="text-brand-accent">.PE</span>
-              </span>
-              <span className="hidden md:inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-brand-primary/10 text-brand-primary uppercase">
+            <Link href="/" className="flex items-center space-x-2.5 transition-opacity hover:opacity-90">
+              <AltoqLogo width={155} height={38} />
+              <span className="hidden md:inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-primary/10 text-brand-primary uppercase">
                 Consumidor B2C
               </span>
             </Link>

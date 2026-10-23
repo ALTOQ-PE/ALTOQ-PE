@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { AltoqLogo } from '@/components/ui/AltoqLogo';
 import { Building2, FileText, ShoppingCart, HelpCircle, ShieldCheck, CheckCircle } from 'lucide-react';
 
 export default function WholesaleConsumerLayout({
@@ -27,12 +28,10 @@ export default function WholesaleConsumerLayout({
       <header className="sticky top-0 z-40 bg-white border-b border-brand-primary/15 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-6">
-            <Link href="/mayorista" className="flex items-center space-x-2">
-              <span className="font-extrabold text-2xl tracking-tight text-brand-primary">
-                ALTOQ<span className="text-brand-secondary">.B2B</span>
-              </span>
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-brand-secondary/15 text-brand-secondary-dark uppercase tracking-wide">
-                HORECA / Retail
+            <Link href="/" className="flex items-center space-x-2.5 transition-opacity hover:opacity-90">
+              <AltoqLogo width={155} height={38} />
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-brand-secondary/15 text-brand-secondary-dark uppercase tracking-wide">
+                HORECA / B2B
               </span>
             </Link>
 

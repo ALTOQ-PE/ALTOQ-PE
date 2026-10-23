@@ -10,6 +10,7 @@ import { CartDrawer } from '@/components/marketplace/CartDrawer';
 import { OrdersModal } from '@/components/marketplace/OrdersModal';
 import { QuoteModal } from '@/components/marketplace/QuoteModal';
 import { ProducerProductModal } from '@/components/marketplace/ProducerProductModal';
+import { AltoqLogo } from '@/components/ui/AltoqLogo';
 import { ShieldCheck, Sparkles, Filter, ChevronDown, CheckCircle2 } from 'lucide-react';
 
 function MarketplaceContent() {
@@ -115,14 +116,9 @@ function MarketplaceContent() {
       <footer className="bg-white border-t border-brand-primary/10 mt-16 py-8 text-xs text-brand-text-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-2">
-            <div>
-              <span className="font-extrabold text-lg tracking-tight text-brand-primary">
-                ALTOQ<span className="text-brand-accent">.PE</span>
-              </span>
-              <span className="block text-[8px] font-extrabold uppercase tracking-[0.25em] text-brand-secondary-dark">
-                FOOD TECHNOLOGY
-              </span>
-              <span className="block text-[11px] font-bold text-gray-700 mt-1">
+            <div className="space-y-1.5">
+              <AltoqLogo width={160} height={40} />
+              <span className="block text-[11px] font-bold text-gray-700">
                 RUC: 20711653786
               </span>
             </div>

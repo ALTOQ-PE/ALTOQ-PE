@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useMarketplace } from './MarketplaceContext';
+import { AltoqLogo } from '@/components/ui/AltoqLogo';
 import type { Role as UserRole } from '@/types';
 import {
   Search,
@@ -45,19 +46,9 @@ export const MarketplaceNavbar: React.FC = () => {
     <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-brand-primary/10">
       {/* Barra Principal del Marketplace (Buscador, Logo y Acciones) */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
-        {/* Logo de ALTOQ PE */}
-        <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
-          <div className="w-10 h-10 rounded-brand-md bg-brand-primary flex items-center justify-center text-white font-black text-xl shadow-sm">
-            A
-          </div>
-          <div className="leading-tight">
-            <span className="font-black text-2xl tracking-tight text-brand-primary">
-              ALTOQ<span className="text-brand-accent">.PE</span>
-            </span>
-            <span className="block text-[9px] font-extrabold uppercase tracking-[0.25em] text-brand-secondary-dark">
-              FOOD TECHNOLOGY
-            </span>
-          </div>
+        {/* Logo Institucional Oficial ALTOQ PE */}
+        <Link href="/" className="flex items-center flex-shrink-0 transition-opacity hover:opacity-90" aria-label="ALTOQ PE - Ir a Inicio">
+          <AltoqLogo width={185} height={42} />
         </Link>
 
         {/* Buscador Central Grande Tipo Saga Falabella */}
