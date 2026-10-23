@@ -167,17 +167,28 @@ export const MarketplaceNavbar: React.FC = () => {
             </div>
           )}
 
-          {/* Botón Mi Cuenta / Iniciar Sesión */}
-          <Link
-            href="/login"
-            className="flex items-center space-x-1.5 px-3 py-2 rounded-brand-md bg-brand-surface-soft hover:bg-gray-200 text-brand-primary transition-colors text-xs font-bold"
-            title={currentUser ? `Conectado como ${currentUser.email}` : 'Iniciar Sesión'}
-          >
-            <UserCheck className="w-4 h-4 text-brand-primary" />
-            <span className="hidden sm:inline">
-              {currentUser?.firstName ? currentUser.firstName : 'Mi Cuenta'}
-            </span>
-          </Link>
+          {/* Botón Mi Perfil / Entrar */}
+          {currentUser ? (
+            <Link
+              href="/perfil"
+              className="flex items-center space-x-1.5 px-3 py-2 rounded-brand-md bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-brand-primary transition-colors text-xs font-bold"
+              title={`Conectado como ${currentUser.email} • Ver y editar mi perfil`}
+            >
+              <UserCheck className="w-4 h-4 text-emerald-700" />
+              <span className="inline font-bold">
+                Mi Perfil{currentUser.firstName ? ` (${currentUser.firstName})` : ''}
+              </span>
+            </Link>
+          ) : (
+            <Link
+              href="/login?redirectTo=/perfil"
+              className="flex items-center space-x-1.5 px-3 py-2 rounded-brand-md bg-brand-surface-soft hover:bg-gray-200 text-brand-primary transition-colors text-xs font-bold"
+              title="Iniciar Sesión o Crear Cuenta"
+            >
+              <UserCheck className="w-4 h-4 text-brand-primary" />
+              <span className="inline">Entrar / Registro</span>
+            </Link>
+          )}
 
           {/* Botón Carrito de Compras */}
           <button

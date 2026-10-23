@@ -283,6 +283,25 @@ export const StorageService = {
     return newUser;
   },
 
+  updateUser: (userId: string, updates: Partial<StoredUser>): StoredUser | undefined => {
+    const db = readDb();
+    const userIndex = db.users.findIndex((u) => u.id === userId);
+    if (userIndex === -1) return undefined;
+
+    const current = db.users[userIndex];
+    const updated: StoredUser = {
+      ...current,
+      ...updates,
+      id: current.id,
+      email: current.email,
+      createdAt: current.createdAt,
+    };
+
+    db.users[userIndex] = updated;
+    writeDb(db);
+    return updated;
+  },
+
   updateUserBalances: (
     userId: string,
     deltaFilipuntos: number,
