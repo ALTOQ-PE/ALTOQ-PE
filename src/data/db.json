@@ -1,0 +1,219 @@
+{
+  "users": [
+    {
+      "id": "usr-consumer-gold",
+      "email": "andrea.rodriguez@altoq.pe",
+      "passwordHash": "hashed_pass_123",
+      "role": "CONSUMER_RETAIL",
+      "firstName": "Andrea",
+      "lastName": "Rodríguez",
+      "dni": "74892019",
+      "phone": "+51 984 123 456",
+      "address": "Av. Larco 743, Dpto 402, Miraflores, Lima",
+      "preferredPaymentMethod": "YAPE_PLIN",
+      "consumerPlan": "PLAN_ORO",
+      "filipuntosBalance": 450,
+      "altoqCreditsBalance": 25,
+      "createdAt": "2026-10-20T10:00:00Z"
+    },
+    {
+      "id": "usr-consumer-free",
+      "email": "comprador.gratis@altoq.pe",
+      "passwordHash": "hashed_pass_123",
+      "role": "CONSUMER_RETAIL",
+      "firstName": "Carlos",
+      "lastName": "Fernández",
+      "dni": "45129834",
+      "phone": "+51 991 876 543",
+      "address": "Calle Las Begonias 441, San Isidro, Lima",
+      "preferredPaymentMethod": "TARJETA_CULQI",
+      "consumerPlan": "PLAN_GRATUITO",
+      "filipuntosBalance": 0,
+      "altoqCreditsBalance": 0,
+      "createdAt": "2026-10-21T12:00:00Z"
+    },
+    {
+      "id": "usr-wholesale",
+      "email": "compras@horecandina.com",
+      "passwordHash": "hashed_pass_123",
+      "role": "CONSUMER_WHOLESALE",
+      "firstName": "Miguel",
+      "lastName": "Vargas",
+      "dni": "10928374",
+      "phone": "+51 972 345 678",
+      "address": "Av. Salaverry 1280, Jesús María, Lima",
+      "preferredPaymentMethod": "YAPE_PLIN",
+      "companyName": "Operadora Gastronómica Peruana S.A.C.",
+      "companyRuc": "20608912341",
+      "consumerPlan": "PLAN_ORO",
+      "filipuntosBalance": 1200,
+      "altoqCreditsBalance": 0,
+      "createdAt": "2026-10-18T09:00:00Z"
+    },
+    {
+      "id": "usr-producer",
+      "email": "ventas@vallesagradoagro.pe",
+      "passwordHash": "hashed_pass_123",
+      "role": "PRODUCER",
+      "companyName": "Agroindustrias del Valle Sagrado",
+      "companyRuc": "20539102941",
+      "digesaRegistryCode": "RSA-P2409821-LIMA",
+      "qualityCertificates": [
+        "HACCP Codex Alimentarius",
+        "BPM DIGESA"
+      ],
+      "maxOctagonsAffidavit": true,
+      "originRegion": "Cusco",
+      "producerPlan": "PLAN_ORO",
+      "phone": "+51 984 999 111",
+      "createdAt": "2026-10-15T08:00:00Z"
+    },
+    {
+      "id": "usr-superadmin",
+      "email": "admin@altoq.pe",
+      "passwordHash": "hashed_pass_superadmin",
+      "role": "SUPERADMIN",
+      "firstName": "Super",
+      "lastName": "Admin",
+      "dni": "00000000",
+      "phone": "+51 900 000 000",
+      "address": "Av. Primavera 2390, Santiago de Surco, Lima",
+      "preferredPaymentMethod": "YAPE_PLIN",
+      "createdAt": "2026-10-01T00:00:00Z"
+    },
+    {
+      "email": "maria.quispe@gmail.com",
+      "passwordHash": "hash_password123",
+      "role": "CONSUMER_RETAIL",
+      "firstName": "María",
+      "lastName": "Quispe Paredes",
+      "dni": "71829304",
+      "phone": "+51 987 654 321",
+      "address": "Av. Javier Prado Este 2450, San Borja, Lima",
+      "preferredPaymentMethod": "YAPE_PLIN",
+      "consumerPlan": "PLAN_ORO",
+      "qualityCertificates": [],
+      "maxOctagonsAffidavit": false,
+      "originRegion": "Cusco",
+      "producerPlan": "PLAN_PLATA",
+      "id": "usr-1792757950153",
+      "createdAt": "2026-10-23T12:19:10.153Z",
+      "filipuntosBalance": 50,
+      "altoqCreditsBalance": 0
+    },
+    {
+      "email": "contacto@coopjunin.pe",
+      "passwordHash": "hash_password123",
+      "role": "PRODUCER",
+      "phone": "+51 964 123 789",
+      "preferredPaymentMethod": "YAPE_PLIN",
+      "consumerPlan": "PLAN_GRATUITO",
+      "companyName": "Cooperativa Agraria BioAndina de Junín",
+      "companyRuc": "20491823901",
+      "digesaRegistryCode": "RSA-J7719283-DIGESA",
+      "qualityCertificates": [
+        "HACCP Codex Alimentarius",
+        "BPM DIGESA",
+        "Certificación Orgánica"
+      ],
+      "maxOctagonsAffidavit": true,
+      "originRegion": "Junín",
+      "producerPlan": "PLAN_ORO",
+      "id": "usr-1792758025793",
+      "createdAt": "2026-10-23T12:20:25.793Z",
+      "filipuntosBalance": 0,
+      "altoqCreditsBalance": 0
+    }
+  ],
+  "orders": [
+    {
+      "id": "ord-1001",
+      "orderNumber": "ALTOQ-2026-0084",
+      "userId": "usr-consumer-gold",
+      "items": [
+        {
+          "productId": "prod-001",
+          "productName": "Ají de Gallina Liofilizado Tradicional",
+          "quantity": 2,
+          "pricePen": 20.25,
+          "isBox": false
+        },
+        {
+          "productId": "prod-003",
+          "productName": "Pack Degustación 4 Sabores del Altiplano",
+          "quantity": 1,
+          "pricePen": 40.41,
+          "isBox": false
+        }
+      ],
+      "subtotalPen": 80.91,
+      "shippingPen": 0,
+      "creditsDiscountPen": 0,
+      "totalPen": 80.91,
+      "status": "ALISTADO_EN_SECO",
+      "paymentMethod": "YAPE_PLIN",
+      "deliveryAddress": "Av. Larco 743, Dpto 402, Miraflores, Lima",
+      "contactPhone": "+51 984 123 456",
+      "createdAt": "2026-10-22T14:30:00Z"
+    },
+    {
+      "id": "ord-1002",
+      "orderNumber": "ALTOQ-2026-0065",
+      "userId": "usr-wholesale",
+      "items": [
+        {
+          "productId": "prod-002",
+          "productName": "Sopa Criolla con Carne Mechada y Fideos",
+          "quantity": 24,
+          "pricePen": 14.5,
+          "isBox": true
+        }
+      ],
+      "subtotalPen": 348,
+      "shippingPen": 0,
+      "creditsDiscountPen": 0,
+      "totalPen": 348,
+      "status": "EN_RUTA_COURIER",
+      "paymentMethod": "YAPE_PLIN",
+      "deliveryAddress": "Av. Salaverry 1280, Jesús María, Lima",
+      "contactPhone": "+51 972 345 678",
+      "createdAt": "2026-10-21T09:15:00Z"
+    }
+  ],
+  "quotes": [
+    {
+      "id": "qte-2001",
+      "quoteNumber": "COT-2026-0012",
+      "userId": "usr-wholesale",
+      "companyName": "Operadora Gastronómica Peruana S.A.C.",
+      "companyRuc": "20608912341",
+      "contactName": "Miguel Vargas",
+      "contactEmail": "compras@horecandina.com",
+      "contactPhone": "+51 972 345 678",
+      "items": [
+        {
+          "productId": "prod-001",
+          "productName": "Ají de Gallina Liofilizado Tradicional",
+          "boxCount": 5,
+          "unitsPerBox": 24,
+          "pricePerBoxPen": 396,
+          "totalItemPen": 1980
+        },
+        {
+          "productId": "prod-002",
+          "productName": "Sopa Criolla con Carne Mechada y Fideos",
+          "boxCount": 3,
+          "unitsPerBox": 24,
+          "pricePerBoxPen": 348,
+          "totalItemPen": 1044
+        }
+      ],
+      "subtotalPen": 2562.71,
+      "igvPen": 461.29,
+      "totalPen": 3024,
+      "validUntil": "2026-11-15T23:59:59Z",
+      "status": "COTIZACION_EMITIDA",
+      "createdAt": "2026-10-22T11:00:00Z"
+    }
+  ]
+}

@@ -1,0 +1,415 @@
+// ==============================================================================
+// ALTOQ PE - ESQUEMA DE BASE DE DATOS POSTGRESQL (PRISMA ORM)
+// Modelo de Datos E-commerce / FoodTech con RBAC, Trazabilidad DIGESA y Unit Economics
+// REGLA ESTRICTA: Sin uso de emojis en código ni comentarios
+// ==============================================================================
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ------------------------------------------------------------------------------
+// ENUMS: ROLES Y ESTADOS DEL SISTEMA
+// ------------------------------------------------------------------------------
+
+enum Role {
+  CONSUMER_RETAIL
+  CONSUMER_WHOLESALE
+  PRODUCER
+  ADMIN
+  SUPERADMIN
+}
+
+enum ConsumerSubscriptionPlan {
+  PLAN_GRATUITO
+  PLAN_ORO
+}
+
+enum ProducerSubscriptionPlan {
+  PLAN_PLATA
+  PLAN_ORO
+}
+
+enum ProductCategory {
+  PLATO_TIPICO_LIOFILIZADO
+  SOPA_INSTANTANEA
+  SNACK_LIOFILIZADO
+  PACK_PRUEBA
+  EXTRACTO_SUPERFOOD
+}
+
+enum SupplyModality {
+  CONSIGNACION_LIMA
+  BAJO_DEMANDA
+}
+
+enum OrderStatus {
+  PAGO_PENDIENTE
+  PAGO_VALIDADO
+  ALISTADO_EN_SECO
+  EN_RUTA_COURIER
+  ENTREGADO
+  CANCELADO
+}
+
+enum PaymentMethod {
+  YAPE_PLIN
+  TARJETA_CULQI
+  ALTOQ_CREDITS
+}
+
+enum BillingDocType {
+  DNI
+  RUC
+}
+
+enum SettlementFrequency {
+  QUINCENAL
+  MENSUAL
+}
+
+enum SettlementStatus {
+  PENDIENTE
+  APROBADA
+  PAGADA
+}
+
+enum CreditTxType {
+  REFUND_WARRANTY
+  PURCHASE_REDEMPTION
+  BONUS_PROMO
+  ADMIN_ADJUSTMENT
+}
+
+// ------------------------------------------------------------------------------
+// 1. GESTIÓN DE USUARIOS Y AUTENTICACIÓN (COMPATIBLE CON SUPABASE AUTH)
+// ------------------------------------------------------------------------------
+
+model User {
+  id            String    @id @default(uuid())
+  supabaseUid   String?   @unique @map("supabase_uid")
+  email         String    @unique
+  role          Role      @default(CONSUMER_RETAIL)
+  isActive      Boolean   @default(true) @map("is_active")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  consumerProfile ConsumerProfile?
+  producerProfile ProducerProfile?
+  auditLogs       AuditLog[]
+
+  @@map("users")
+}
+
+// ------------------------------------------------------------------------------
+// 2. ACTOR PROVEEDOR / PRODUCTOR AGROINDUSTRIAL (B2B)
+// ------------------------------------------------------------------------------
+
+model ProducerProfile {
+  id                  String              @id @default(uuid())
+  userId              String              @unique @map("user_id")
+  companyName         String              @map("company_name")
+  ruc                 String              @unique @db.VarChar(11)
+  legalRepresentative String              @map("legal_representative")
+  businessAddress     String              @map("business_address")
+  originRegion        String              @map("origin_region")
+  contactPhone        String              @map("contact_phone")
+  
+  // Validación Sanitaria y Cumplimiento de Calidad
+  digesaRegistryCode  String              @default("RSA-PROV-2026") @map("digesa_registry_code")
+  qualityCertificates String[]            @default([]) @map("quality_certificates")
+  maxOctagonsAffidavit Boolean            @default(true) @map("max_octagons_affidavit")
+  nutritionalMatrixJson Json?             @map("nutritional_matrix_json")
+
+  // Suscripción y beneficios de productor
+  subscriptionPlan    ProducerSubscriptionPlan @default(PLAN_PLATA) @map("subscription_plan")
+  trialEndsAt         DateTime?           @map("trial_ends_at")
+  digitalLiteracyCompleted Boolean        @default(false) @map("digital_literacy_completed")
+
+  // Datos bancarios para liquidaciones financieras
+  bankName            String              @default("BCP") @map("bank_name")
+  bankAccountNumber   String              @default("") @map("bank_account_number")
+  cciNumber           String              @default("") @map("cci_number")
+  settlementFrequency SettlementFrequency @default(QUINCENAL) @map("settlement_frequency")
+  
+  // Auditoría y aprobación administrativa
+  isApproved          Boolean             @default(false) @map("is_approved")
+  approvedAt          DateTime?           @map("approved_at")
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+
+  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products            Product[]
+  settlements         ProducerSettlement[]
+
+  @@map("producer_profiles")
+}
+
+// ------------------------------------------------------------------------------
+// 3. PRODUCTOS Y CATÁLOGO DE COMPRA INFORMADA (<= 2 OCTÓGONOS)
+// ------------------------------------------------------------------------------
+
+model Product {
+  id                     String          @id @default(uuid())
+  producerId             String          @map("producer_id")
+  commercialName         String          @map("commercial_name")
+  slug                   String          @unique
+  category               ProductCategory
+  isTrialPack            Boolean         @default(false) @map("is_trial_pack")
+  
+  // Transparencia Cultural y Sanitaria
+  culturalContext        String          @db.Text @map("cultural_context")
+  ingredients            String          @db.Text
+  netWeightGrams         Int             @map("net_weight_grams")
+  rehydratedYieldGrams   Int             @map("rehydrated_yield_grams")
+  allergens              String[]        @default([])
+  prepSteps              String          @db.Text @map("prep_steps")
+  nutritionalTableJson   Json?           @map("nutritional_table_json")
+
+  // Recursos Multimedia
+  packagingPhotoUrl      String          @map("packaging_photo_url")
+  dishPhotoUrl           String          @map("dish_photo_url")
+  youtubeRecipeUrl       String?         @map("youtube_recipe_url")
+
+  // Logística y Humedad (>80% HR en Lima)
+  packagingBarrierType   String          @default("Tricapa foil multicapa sellado hermetico") @map("packaging_barrier_type")
+  dimensionsCm           String?         @map("dimensions_cm")
+  grossWeightGrams       Int             @map("gross_weight_grams")
+  stockInLima            Int             @default(0) @map("stock_in_lima")
+  batchCode              String          @map("batch_code")
+  expirationDate         DateTime        @map("expiration_date")
+  restockLeadTimeDays    Int             @default(7) @map("restock_lead_time_days")
+  supplyModality         SupplyModality  @default(CONSIGNACION_LIMA) @map("supply_modality")
+
+  // Comercial Minorista y Mayorista B2B
+  wholesaleCostPen       Decimal         @db.Decimal(10, 2) @map("wholesale_cost_pen") // C_prod (Ex-planta productor)
+  publicPricePen         Decimal         @db.Decimal(10, 2) @map("public_price_pen")   // P_minorista (PVP)
+  wholesalePricePen      Decimal?        @db.Decimal(10, 2) @map("wholesale_price_pen") // P_mayorista por volumen
+  wholesaleMoqUnits      Int             @default(12) @map("wholesale_moq_units")        // Cantidad minima mayorista
+  commissionPercentage   Decimal         @db.Decimal(5, 2) @map("commission_percentage")
+  moqUnits               Int             @default(1) @map("moq_units")
+  techSheetUrl           String?         @map("tech_sheet_url")                          // Ficha tecnica B2B
+  isExclusiveGold        Boolean         @default(false) @map("is_exclusive_gold")       // Solo catalogo completo Plan Oro
+
+  // Cumplimiento Legal y Regla de Salud Obligatoria (<= 2 Octógonos)
+  digesaCode             String          @map("digesa_code")
+  qualityCertificatesUrls String[]       @default([]) @map("quality_certificates_urls")
+  octagonCount           Int             @default(0) @map("octagon_count") // Restriccion estricta: 0, 1 o 2
+  octagonTypes           String[]        @default([]) @map("octagon_types") // ej: ["ALTO_EN_SODIO"]
+  healthPolicyAccepted   Boolean         @default(false) @map("health_policy_accepted")
+
+  // Estados de catálogo
+  isApproved             Boolean         @default(false) @map("is_approved")
+  isActive               Boolean         @default(true) @map("is_active")
+  createdAt              DateTime        @default(now()) @map("created_at")
+  updatedAt              DateTime        @updatedAt @map("updated_at")
+
+  producer               ProducerProfile @relation(fields: [producerId], references: [id], onDelete: Restrict)
+  orderItems             OrderItem[]
+  reviews                Review[]
+
+  @@map("products")
+}
+
+// ------------------------------------------------------------------------------
+// 4. ACTOR CONSUMIDOR (MINORISTA / MAYORISTA) Y BILLETERA "ALTOQ CRÉDITOS"
+// ------------------------------------------------------------------------------
+
+model ConsumerProfile {
+  id                     String                  @id @default(uuid())
+  userId                 String                  @unique @map("user_id")
+  clientType             Role                    @default(CONSUMER_RETAIL) @map("client_type")
+  subscriptionPlan       ConsumerSubscriptionPlan @default(PLAN_GRATUITO) @map("subscription_plan")
+  firstName              String                  @map("first_name")
+  lastName               String                  @map("last_name")
+  dni                    String                  @default("00000000") @db.VarChar(8) @map("dni")
+  phoneWhatsapp          String                  @map("phone_whatsapp")
+  preferredPaymentMethod PaymentMethod          @default(YAPE_PLIN) @map("preferred_payment_method")
+  
+  // Datos B2B para Consumidor Mayorista (HORECA / Comercios)
+  companyName            String?                 @map("company_name")
+  companyRuc             String?                 @map("company_ruc")
+  isWholesaleVerified    Boolean                 @default(false) @map("is_wholesale_verified")
+
+  // Ubicación y Despacho en Lima
+  addressLine            String                  @map("address_line")
+  district               String
+  addressReference       String?                 @map("address_reference")
+  preferredDeliveryWindow String?                @default("Cualquier horario") @map("preferred_delivery_window")
+
+  // Facturación
+  billingDocType         BillingDocType          @default(DNI) @map("billing_doc_type")
+  billingDocNumber       String                  @map("billing_doc_number")
+  billingBusinessName    String?                 @map("billing_business_name")
+
+  // Billetera Interna y Programa de Fidelización
+  altoqCreditsBalance    Decimal                 @default(0.00) @db.Decimal(10, 2) @map("altoq_credits_balance")
+  filipuntosBalance      Int                     @default(0) @map("filipuntos_balance")
+  dietaryPreferences     String[]                @default([]) @map("dietary_preferences")
+
+  createdAt              DateTime                @default(now()) @map("created_at")
+  updatedAt              DateTime                @updatedAt @map("updated_at")
+
+  user                   User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders                 Order[]
+  creditTransactions     AltoqCreditTransaction[]
+  reviews                Review[]
+
+  @@map("consumer_profiles")
+}
+
+// ------------------------------------------------------------------------------
+// 5. PEDIDOS, UNIT ECONOMICS Y TRAZABILIDAD LOGÍSTICA (4 PASOS)
+// ------------------------------------------------------------------------------
+
+model Order {
+  id                     String          @id @default(uuid())
+  orderNumber            String          @unique @map("order_number") // ej. ALTOQ-2026-0001
+  consumerId             String          @map("consumer_id")
+  status                 OrderStatus     @default(PAGO_PENDIENTE)
+  
+  // Desglose de Unit Economics (Margen de Contribucion)
+  subtotalProductsPen    Decimal         @db.Decimal(10, 2) @map("subtotal_products_pen") // Suma PVP
+  freightChargedPen      Decimal         @default(0.00) @db.Decimal(10, 2) @map("freight_charged_pen") // F_cobrado
+  totalAmountPen         Decimal         @db.Decimal(10, 2) @map("total_amount_pen") // Total cobrado al cliente
+  
+  // Costos Reales para Auditoria de Margen de Contribucion
+  wholesaleCostTotalPen  Decimal         @db.Decimal(10, 2) @map("wholesale_cost_total_pen") // C_prod
+  packagingCostPen       Decimal         @default(2.50) @db.Decimal(10, 2) @map("packaging_cost_pen") // C_emp
+  shippingCostRealPen    Decimal         @default(8.50) @db.Decimal(10, 2) @map("shipping_cost_real_pen") // C_env
+  gatewayCostPen         Decimal         @default(0.00) @db.Decimal(10, 2) @map("gateway_cost_pen") // C_pas
+  creditsAppliedPen      Decimal         @default(0.00) @db.Decimal(10, 2) @map("credits_applied_pen")
+  contributionMarginPen  Decimal         @db.Decimal(10, 2) @map("contribution_margin_pen") // MCu calculado
+
+  // Pago y Comprobante
+  paymentMethod          PaymentMethod   @map("payment_method")
+  paymentVoucherUrl      String?         @map("payment_voucher_url")
+  isPaymentVerified      Boolean         @default(false) @map("is_payment_verified")
+
+  // Logistica 4 Pasos y Tracking
+  courierName            String?         @map("courier_name")
+  trackingUrl            String?         @map("tracking_url")
+  deliveryDistrict       String          @map("delivery_district")
+  deliveryAddress        String          @map("delivery_address")
+
+  createdAt              DateTime        @default(now()) @map("created_at")
+  updatedAt              DateTime        @updatedAt @map("updated_at")
+
+  consumer               ConsumerProfile @relation(fields: [consumerId], references: [id], onDelete: Restrict)
+  items                  OrderItem[]
+  creditTransactions     AltoqCreditTransaction[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id                   String   @id @default(uuid())
+  orderId              String   @map("order_id")
+  productId            String   @map("product_id")
+  quantity             Int
+  unitWholesaleCostPen Decimal  @db.Decimal(10, 2) @map("unit_wholesale_cost_pen")
+  unitPublicPricePen   Decimal  @db.Decimal(10, 2) @map("unit_public_price_pen")
+  subtotalPublicPen    Decimal  @db.Decimal(10, 2) @map("subtotal_public_pen")
+
+  order                Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product              Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@map("order_items")
+}
+
+// ------------------------------------------------------------------------------
+// 6. HISTORIAL DE "ALTOQ CRÉDITOS" (BILLETERA VIRTUAL DE GARANTÍA)
+// ------------------------------------------------------------------------------
+
+model AltoqCreditTransaction {
+  id              String       @id @default(uuid())
+  consumerId      String       @map("consumer_id")
+  orderId         String?      @map("order_id")
+  amountPen       Decimal      @db.Decimal(10, 2) @map("amount_pen")
+  type            CreditTxType
+  reason          String       @db.Text
+  balanceAfterPen Decimal      @db.Decimal(10, 2) @map("balance_after_pen")
+  createdAt       DateTime     @default(now()) @map("created_at")
+
+  consumer        ConsumerProfile @relation(fields: [consumerId], references: [id], onDelete: Cascade)
+  order           Order?          @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@map("altoq_credit_transactions")
+}
+
+// ------------------------------------------------------------------------------
+// 7. LIQUIDACIONES FINANCIERAS PARA PRODUCTORES
+// ------------------------------------------------------------------------------
+
+model ProducerSettlement {
+  id                   String           @id @default(uuid())
+  producerId           String           @map("producer_id")
+  periodStart          DateTime         @map("period_start")
+  periodEnd            DateTime         @map("period_end")
+  totalWholesalePen    Decimal          @db.Decimal(10, 2) @map("total_wholesale_pen")
+  totalCommissionPen   Decimal          @db.Decimal(10, 2) @map("total_commission_pen")
+  netPayablePen        Decimal          @db.Decimal(10, 2) @map("net_payable_pen")
+  status               SettlementStatus @default(PENDIENTE)
+  paymentProofUrl      String?          @map("payment_proof_url")
+  settledAt            DateTime?        @map("settled_at")
+  createdAt            DateTime         @default(now()) @map("created_at")
+  updatedAt            DateTime         @updatedAt @map("updated_at")
+
+  producer             ProducerProfile  @relation(fields: [producerId], references: [id], onDelete: Restrict)
+
+  @@map("producer_settlements")
+}
+
+// ------------------------------------------------------------------------------
+// 8. RESEÑAS VERIFICADAS Y EVALUACIONES
+// ------------------------------------------------------------------------------
+
+model Review {
+  id                 String          @id @default(uuid())
+  productId          String          @map("product_id")
+  consumerId         String          @map("consumer_id")
+  rating             Int             // 1 a 5 estrellas
+  comment            String          @db.Text
+  isVerifiedPurchase Boolean         @default(true) @map("is_verified_purchase")
+  createdAt          DateTime        @default(now()) @map("created_at")
+
+  product            Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  consumer           ConsumerProfile @relation(fields: [consumerId], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
+}
+
+// ------------------------------------------------------------------------------
+// 9. PARÁMETROS GLOBALES Y LOGS DE AUDITORÍA
+// ------------------------------------------------------------------------------
+
+model SystemConfig {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String   @db.Text
+  description String?
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("system_configs")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  userId      String?  @map("user_id")
+  action      String   // ej. "PRODUCT_APPROVED", "OCTAGON_RULE_CHECK", "CREDIT_ISSUED"
+  entity      String   // ej. "Product", "AltoqCredit", "ProducerProfile"
+  entityId    String   @map("entity_id")
+  detailsJson Json     @map("details_json")
+  ipAddress   String?  @map("ip_address")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}
