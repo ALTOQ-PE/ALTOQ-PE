@@ -23,9 +23,7 @@ import {
 export const MarketplaceNavbar: React.FC = () => {
   const {
     currentRole,
-    setRole,
     consumerPlan,
-    setConsumerPlan,
     cart,
     setIsCartOpen,
     setIsOrdersOpen,
@@ -40,141 +38,12 @@ export const MarketplaceNavbar: React.FC = () => {
     altoqCreditsBalance,
   } = useMarketplace();
 
-  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
-
   // Total de unidades en carrito
   const cartTotalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
-  // Opciones de Roles disponibles para el selector interactivo
-  const ROLES_LIST: { id: UserRole; title: string; subtitle: string; icon: React.ReactNode }[] = [
-    {
-      id: 'CONSUMER_RETAIL',
-      title: 'Consumidor Minorista (B2C)',
-      subtitle: 'Pouches individuales, packs de prueba, recetas express y Filipuntos',
-      icon: <Award className="w-4 h-4 text-emerald-600" />,
-    },
-    {
-      id: 'CONSUMER_WHOLESALE',
-      title: 'Consumidor Mayorista (B2B)',
-      subtitle: 'Precios por caja, lotes HORECA, MOQ y cotizaciones con RUC',
-      icon: <Building2 className="w-4 h-4 text-brand-secondary-dark" />,
-    },
-    {
-      id: 'PRODUCER',
-      title: 'Proveedor Agroindustrial',
-      subtitle: 'Gestión de productos, stock en acopio Lima y liquidaciones',
-      icon: <Package className="w-4 h-4 text-brand-accent" />,
-    },
-    {
-      id: 'SUPERADMIN',
-      title: 'SuperAdmin / Gobernanza',
-      subtitle: 'Curaduría DIGESA, telemetría de humedad y Unit Economics',
-      icon: <Activity className="w-4 h-4 text-red-600" />,
-    },
-  ];
-
-  const currentRoleObj = ROLES_LIST.find((r) => r.id === currentRole) || ROLES_LIST[0];
-
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-brand-primary/10">
-      {/* 1. Barra de Utilidad Superior Tipo Saga Falabella */}
-      <div className="bg-[#0A291F] text-white text-xs py-1.5 px-4">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-          {/* Mensaje de Logística y Garantía */}
-          <div className="flex items-center space-x-2 text-[11px] text-emerald-100">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>
-              Despacho Centralizado desde Acopio Seco Lima • Protección Humedad (&gt;80% HR) • Registro DIGESA
-            </span>
-          </div>
-
-          {/* Selector de Rol Dinámico y Selector de Plan de Comprador */}
-          <div className="flex items-center space-x-3">
-            {/* Toggle Plan Gratuito vs Plan Oro para Compradores */}
-            {(currentRole === 'CONSUMER_RETAIL' || currentRole === 'CONSUMER_WHOLESALE') && (
-              <div className="flex items-center space-x-1.5 bg-white/10 px-2.5 py-0.5 rounded-full text-[11px] font-bold border border-white/15">
-                <span className="text-gray-300 text-[10px]">Plan:</span>
-                <button
-                  type="button"
-                  onClick={() => setConsumerPlan(consumerPlan === 'PLAN_ORO' ? 'PLAN_GRATUITO' : 'PLAN_ORO')}
-                  className={`px-2 py-0.5 rounded-full text-[10px] font-black transition-colors ${
-                    consumerPlan === 'PLAN_ORO'
-                      ? 'bg-amber-400 text-amber-950 shadow-sm'
-                      : 'bg-white/20 text-gray-200 hover:bg-white/30'
-                  }`}
-                  title="Haz clic para alternar entre Plan Gratuito y Plan Oro"
-                >
-                  {consumerPlan === 'PLAN_ORO' ? 'Plan Oro Activo' : 'Plan Gratuito'}
-                </button>
-              </div>
-            )}
-
-            {/* Selector de Rol */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
-                className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white font-semibold text-xs border border-white/20"
-              >
-                <span>Sesión activa:</span>
-                <strong className="text-emerald-300 flex items-center space-x-1">
-                  <span>{currentRoleObj.title}</span>
-                  <ChevronDown className="w-3.5 h-3.5" />
-                </strong>
-              </button>
-
-              {/* Menú Desplegable de Roles */}
-              {isRoleDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white rounded-brand-lg shadow-2xl border border-gray-200 py-2 z-50 text-brand-text-main animate-fadeIn">
-                  <div className="px-3 py-1.5 border-b border-gray-100 text-[10px] uppercase font-bold text-gray-500">
-                    Cambiar Cuenta de Demostración
-                  </div>
-                  {ROLES_LIST.map((roleItem) => (
-                    <button
-                      key={roleItem.id}
-                      type="button"
-                      onClick={() => {
-                        setRole(roleItem.id);
-                        setIsRoleDropdownOpen(false);
-                      }}
-                      className={`w-full text-left px-3.5 py-2.5 flex items-start space-x-3 hover:bg-emerald-50/70 transition-colors ${
-                        currentRole === roleItem.id ? 'bg-emerald-50 border-l-4 border-brand-primary' : ''
-                      }`}
-                    >
-                      <div className="mt-0.5">{roleItem.icon}</div>
-                      <div>
-                        <div className="text-xs font-bold text-brand-primary">
-                          {roleItem.title}
-                        </div>
-                        <div className="text-[11px] text-gray-500 leading-tight">
-                          {roleItem.subtitle}
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                  <div className="px-3 pt-2 border-t border-gray-100">
-                    <Link
-                      href="/login"
-                      className="block text-center py-1.5 rounded bg-gray-100 hover:bg-gray-200 text-brand-primary text-xs font-bold"
-                    >
-                      Ir a Iniciar Sesión / Crear Cuenta
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <Link
-              href="/login"
-              className="text-[11px] text-emerald-200 hover:text-white underline font-medium"
-            >
-              Cambiar Cuenta
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. Barra Principal del Marketplace (Buscador, Logo y Acciones) */}
+      {/* Barra Principal del Marketplace (Buscador, Logo y Acciones) */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
         {/* Logo de ALTOQ PE */}
         <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
@@ -297,6 +166,18 @@ export const MarketplaceNavbar: React.FC = () => {
               </button>
             </div>
           )}
+
+          {/* Botón Mi Cuenta / Iniciar Sesión */}
+          <Link
+            href="/login"
+            className="flex items-center space-x-1.5 px-3 py-2 rounded-brand-md bg-brand-surface-soft hover:bg-gray-200 text-brand-primary transition-colors text-xs font-bold"
+            title={currentUser ? `Conectado como ${currentUser.email}` : 'Iniciar Sesión'}
+          >
+            <UserCheck className="w-4 h-4 text-brand-primary" />
+            <span className="hidden sm:inline">
+              {currentUser?.firstName ? currentUser.firstName : 'Mi Cuenta'}
+            </span>
+          </Link>
 
           {/* Botón Carrito de Compras */}
           <button

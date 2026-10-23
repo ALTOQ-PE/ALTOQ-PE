@@ -70,29 +70,7 @@ function LoginFormContent() {
     );
   };
 
-  // Función de Autenticación Rápida (1 Clic)
-  const handleQuickLogin = (
-    emailToLogin: string,
-    roleToSet: UserRole,
-    planToSet: 'PLAN_GRATUITO' | 'PLAN_ORO',
-    userIdToSet: string
-  ) => {
-    setEmail(emailToLogin);
-    setPassword('123456');
-    document.cookie = `altoq-user-role=${roleToSet}; path=/; max-age=86400`;
-    document.cookie = `altoq-consumer-plan=${planToSet}; path=/; max-age=86400`;
-    document.cookie = `altoq-session-token=sess-${userIdToSet}; path=/; max-age=86400`;
 
-    let targetPath = redirectTo;
-    if (redirectTo === '/') {
-      if (roleToSet === 'CONSUMER_WHOLESALE') targetPath = '/mayorista';
-      else if (roleToSet === 'PRODUCER') targetPath = '/producer';
-      else if (roleToSet === 'SUPERADMIN') targetPath = '/superadmin';
-      else targetPath = '/';
-    }
-
-    router.push(targetPath);
-  };
 
   // Iniciar Sesión con Formulario Real
   const handleStandardLogin = async (e: React.FormEvent) => {
@@ -268,8 +246,8 @@ function LoginFormContent() {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="123456"
-                      className="w-full pl-9 pr-3 py-2.5 text-xs border border-gray-300 rounded-brand-md focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary bg-white font-mono"
+                      placeholder="••••••••"
+                      className="w-full pl-9 pr-3 py-2.5 text-xs border border-gray-300 rounded-brand-md focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary bg-white"
                     />
                   </div>
                 </div>
@@ -282,84 +260,6 @@ function LoginFormContent() {
                   {isSubmitting ? 'Iniciando sesión...' : 'Ingresar al Marketplace'}
                 </button>
               </form>
-
-              {/* Acceso Rápido por Perfil Real (1 Clic) */}
-              <div className="pt-4 border-t border-gray-200">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 block mb-3 text-center">
-                  O ingresa con 1 clic usando una cuenta real pre-cargada:
-                </span>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {/* 1. Minorista Oro */}
-                  <button
-                    type="button"
-                    onClick={() => handleQuickLogin('consumidormin@gmail.com', 'CONSUMER_RETAIL', 'PLAN_ORO', 'usr_c8192a4f_min_gold')}
-                    className="p-3 text-left rounded-brand-md border border-emerald-200 bg-emerald-50/60 hover:bg-emerald-100/70 transition-colors flex items-center space-x-2.5"
-                  >
-                    <ShoppingBag className="w-5 h-5 text-emerald-800 flex-shrink-0" />
-                    <div>
-                      <div className="text-xs font-bold text-emerald-950">Comprador Minorista (Oro)</div>
-                      <div className="text-[10px] text-emerald-700">consumidormin@gmail.com • Carlos M.</div>
-                    </div>
-                  </button>
-
-                  {/* 2. Minorista Gratuito */}
-                  <button
-                    type="button"
-                    onClick={() => handleQuickLogin('consumidormingratis@gmail.com', 'CONSUMER_RETAIL', 'PLAN_GRATUITO', 'usr_d4710b9c_min_free')}
-                    className="p-3 text-left rounded-brand-md border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors flex items-center space-x-2.5"
-                  >
-                    <User className="w-5 h-5 text-gray-600 flex-shrink-0" />
-                    <div>
-                      <div className="text-xs font-bold text-gray-900">Comprador Minorista (Gratuito)</div>
-                      <div className="text-[10px] text-gray-500">consumidormingratis@gmail.com • Andrea R.</div>
-                    </div>
-                  </button>
-
-                  {/* 3. Mayorista B2B */}
-                  <button
-                    type="button"
-                    onClick={() => handleQuickLogin('consumidormay@gmail.com', 'CONSUMER_WHOLESALE', 'PLAN_ORO', 'usr_f9283e1a_wholesale')}
-                    className="p-3 text-left rounded-brand-md border border-emerald-300 bg-emerald-50/80 hover:bg-emerald-100 transition-colors flex items-center space-x-2.5"
-                  >
-                    <Building2 className="w-5 h-5 text-emerald-900 flex-shrink-0" />
-                    <div>
-                      <div className="text-xs font-bold text-emerald-950">Mayorista HORECA (Oro)</div>
-                      <div className="text-[10px] text-emerald-700">consumidormay@gmail.com • Dist. Los Andes</div>
-                    </div>
-                  </button>
-
-                  {/* 4. Proveedor */}
-                  <button
-                    type="button"
-                    onClick={() => handleQuickLogin('proveedor@gmail.com', 'PRODUCER', 'PLAN_ORO', 'usr_e1094c3d_producer')}
-                    className="p-3 text-left rounded-brand-md border border-orange-200 bg-orange-50/60 hover:bg-orange-100/70 transition-colors flex items-center space-x-2.5"
-                  >
-                    <Package className="w-5 h-5 text-[#D85A2F] flex-shrink-0" />
-                    <div>
-                      <div className="text-xs font-bold text-orange-950">Proveedor Agroindustrial</div>
-                      <div className="text-[10px] text-orange-700">proveedor@gmail.com • Coop. Valle Sagrado</div>
-                    </div>
-                  </button>
-                </div>
-
-                {/* 5. Acceso Superadmin y Credenciales */}
-                <div className="mt-3 pt-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleQuickLogin('superadmin@gmail.com', 'SUPERADMIN', 'PLAN_ORO', 'usr_a0481f7e_superadmin')}
-                    className="w-full sm:w-auto px-3 py-1.5 rounded-brand-md border border-red-200 bg-red-50/70 hover:bg-red-100/80 text-red-900 text-[11px] font-bold flex items-center justify-center space-x-1.5 transition-colors"
-                  >
-                    <ShieldCheck className="w-3.5 h-3.5 text-red-600" />
-                    <span>Superadmin (superadmin@gmail.com)</span>
-                  </button>
-
-                  <div className="text-[11px] text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2.5 py-1.5 rounded flex items-center space-x-1.5">
-                    <span>Contraseña para todas las cuentas:</span>
-                    <span className="font-mono text-xs font-black text-[#0F3D2E] bg-white px-1.5 py-0.5 rounded border border-emerald-300">123456</span>
-                  </div>
-                </div>
-              </div>
             </div>
           ) : (
             /* TAB 2: CREAR CUENTA NUEVA */
