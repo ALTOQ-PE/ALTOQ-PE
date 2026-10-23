@@ -24,7 +24,7 @@ import {
   Check
 } from 'lucide-react';
 
-export default function LoginPage() {
+function LoginFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirectTo') || '/';
@@ -904,5 +904,19 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <React.Suspense
+      fallback={
+        <div className="min-h-screen bg-[#F6F3EB] flex items-center justify-center">
+          <div className="w-8 h-8 border-4 border-[#0F3D2E] border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      }
+    >
+      <LoginFormContent />
+    </React.Suspense>
   );
 }
