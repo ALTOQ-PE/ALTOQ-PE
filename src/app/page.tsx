@@ -115,9 +115,17 @@ function MarketplaceContent() {
       <footer className="bg-white border-t border-brand-primary/10 mt-16 py-8 text-xs text-brand-text-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-2">
-            <span className="font-extrabold text-lg tracking-tight text-brand-primary">
-              ALTOQ<span className="text-brand-accent">.PE</span>
-            </span>
+            <div>
+              <span className="font-extrabold text-lg tracking-tight text-brand-primary">
+                ALTOQ<span className="text-brand-accent">.PE</span>
+              </span>
+              <span className="block text-[8px] font-extrabold uppercase tracking-[0.25em] text-brand-secondary-dark">
+                FOOD TECHNOLOGY
+              </span>
+              <span className="block text-[11px] font-bold text-gray-700 mt-1">
+                RUC: 20711653786
+              </span>
+            </div>
             <p className="text-[11px] text-gray-500 leading-relaxed">
               El marketplace líder en alimentos liofilizados e instantáneos del Perú. Conectamos directamente a agroindustrias regionales con consumidores y comercios.
             </p>
