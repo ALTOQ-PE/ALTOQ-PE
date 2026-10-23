@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2. Validaciones Específicas por Rol
+    // 2. Validaciones Específicas por Rol (Flexibles sin restricción estricta de longitud)
     if (role === 'CONSUMER_RETAIL' || role === 'CONSUMER_WHOLESALE') {
       if (!firstName || !lastName) {
         return NextResponse.json(
@@ -44,9 +44,9 @@ export async function POST(request: Request) {
           { status: 400 }
         );
       }
-      if (!dni || dni.length !== 8) {
+      if (!dni) {
         return NextResponse.json(
-          { error: 'El DNI debe contener exactamente 8 dígitos.' },
+          { error: 'El DNI o documento de identidad es obligatorio.' },
           { status: 400 }
         );
       }
@@ -70,9 +70,9 @@ export async function POST(request: Request) {
       }
 
       if (role === 'CONSUMER_WHOLESALE') {
-        if (!companyName || !companyRuc || companyRuc.length !== 11) {
+        if (!companyName || !companyRuc) {
           return NextResponse.json(
-            { error: 'Para compras mayoristas, la Razón Social y el RUC (11 dígitos) son obligatorios para facturación.' },
+            { error: 'Para compras mayoristas, la Razón Social y el RUC son obligatorios.' },
             { status: 400 }
           );
         }
@@ -80,9 +80,9 @@ export async function POST(request: Request) {
     }
 
     if (role === 'PRODUCER') {
-      if (!companyName || !companyRuc || companyRuc.length !== 11) {
+      if (!companyName || !companyRuc) {
         return NextResponse.json(
-          { error: 'La Razón Social y el RUC (11 dígitos) de la empresa productora o cooperativa son obligatorios.' },
+          { error: 'La Razón Social y el RUC de la empresa productora son obligatorios.' },
           { status: 400 }
         );
       }

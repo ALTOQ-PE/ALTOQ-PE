@@ -416,12 +416,11 @@ function PerfilContent() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-brand-primary mb-1">DNI (8 dígitos) *</label>
+                <label className="block text-xs font-bold text-brand-primary mb-1">DNI / Documento *</label>
                 <input
                   type="text"
-                  maxLength={8}
                   value={dni}
-                  onChange={(e) => setDni(e.target.value.replace(/\D/g, ''))}
+                  onChange={(e) => setDni(e.target.value)}
                   className="w-full px-3 py-2 text-xs border border-gray-300 rounded-brand-md focus:border-brand-primary focus:outline-none font-mono"
                 />
               </div>
@@ -694,12 +693,11 @@ function PerfilContent() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-brand-primary mb-1">RUC (11 dígitos) *</label>
+                  <label className="block text-xs font-bold text-brand-primary mb-1">RUC *</label>
                   <input
                     type="text"
-                    maxLength={11}
                     value={companyRuc}
-                    onChange={(e) => setCompanyRuc(e.target.value.replace(/\D/g, ''))}
+                    onChange={(e) => setCompanyRuc(e.target.value)}
                     className="w-full px-3 py-2 text-xs border border-gray-300 rounded-brand-md focus:border-brand-primary focus:outline-none font-mono"
                   />
                 </div>

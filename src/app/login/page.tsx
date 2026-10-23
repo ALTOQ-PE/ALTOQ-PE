@@ -357,14 +357,13 @@ function LoginFormContent() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-bold text-brand-primary mb-1">
-                          DNI (8 dígitos) *
+                          DNI / Documento *
                         </label>
                         <input
                           type="text"
                           required
-                          maxLength={8}
                           value={dni}
-                          onChange={(e) => setDni(e.target.value.replace(/\D/g, ''))}
+                          onChange={(e) => setDni(e.target.value)}
                           placeholder="74892019"
                           className="w-full px-3 py-2 text-xs border border-gray-300 rounded-brand-md focus:border-brand-primary focus:outline-none font-mono"
                         />
@@ -530,14 +529,13 @@ function LoginFormContent() {
                           </div>
                           <div>
                             <label className="block text-[11px] font-bold text-emerald-950 mb-1">
-                              RUC de la Empresa (11 dígitos) *
+                              RUC de la Empresa *
                             </label>
                             <input
                               type="text"
                               required={selectedRole === 'CONSUMER_WHOLESALE'}
-                              maxLength={11}
                               value={companyRuc}
-                              onChange={(e) => setCompanyRuc(e.target.value.replace(/\D/g, ''))}
+                              onChange={(e) => setCompanyRuc(e.target.value)}
                               placeholder="20608912341"
                               className="w-full px-3 py-2 text-xs border border-gray-300 rounded-brand-md focus:border-brand-primary focus:outline-none bg-white font-mono"
                             />
@@ -568,14 +566,13 @@ function LoginFormContent() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-brand-primary mb-1">
-                          RUC de la Empresa (11 dígitos) *
+                          RUC de la Empresa *
                         </label>
                         <input
                           type="text"
                           required
-                          maxLength={11}
                           value={companyRuc}
-                          onChange={(e) => setCompanyRuc(e.target.value.replace(/\D/g, ''))}
+                          onChange={(e) => setCompanyRuc(e.target.value)}
                           placeholder="20539102941"
                           className="w-full px-3 py-2 text-xs border border-gray-300 rounded-brand-md focus:border-brand-primary focus:outline-none font-mono"
                         />
