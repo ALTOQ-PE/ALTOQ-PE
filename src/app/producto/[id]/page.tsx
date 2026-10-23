@@ -80,7 +80,7 @@ function ProductDetailContent() {
 
   if (!product) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#F8F9F7]">
+      <div className="min-h-screen flex flex-col bg-[#F6F3EB]">
         <MarketplaceNavbar />
         <div className="max-w-4xl mx-auto px-4 py-16 text-center space-y-4">
           <h1 className="text-2xl font-black text-brand-primary">Producto no encontrado</h1>
@@ -159,7 +159,7 @@ function ProductDetailContent() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8F9F7]">
+    <div className="min-h-screen flex flex-col bg-[#F6F3EB]">
       {/* 1. Barra de Navegación Oficial */}
       <MarketplaceNavbar />
 

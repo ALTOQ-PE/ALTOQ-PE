@@ -1,5 +1,20 @@
 import type { Metadata, Viewport } from 'next';
+import { Plus_Jakarta_Sans, Montserrat } from 'next/font/google';
 import './globals.css';
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-base',
+});
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-display',
+});
 
 export const metadata: Metadata = {
   title: 'ALTOQ PE | E-commerce de Alimentos Liofilizados del Perú',
@@ -25,8 +40,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es">
-      <body className="min-h-screen antialiased bg-brand-bg text-brand-text-main">
+    <html lang="es" className={`${plusJakartaSans.variable} ${montserrat.variable}`}>
+      <body className="min-h-screen antialiased bg-brand-bg text-brand-text-main font-sans">
         {children}
       </body>
     </html>

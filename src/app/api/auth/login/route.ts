@@ -21,13 +21,13 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validar contraseña (Contraseña oficial solicitada: 123)
+    // Validar contraseña (Contraseña oficial solicitada: 123456)
     const isValidPassword =
+      password === '123456' ||
       password === '123' ||
       user.passwordHash === `hash_${password}` ||
       user.passwordHash === password ||
-      password === 'Password123!' ||
-      password === '123456';
+      password === 'Password123!';
 
     if (!isValidPassword) {
       return NextResponse.json(

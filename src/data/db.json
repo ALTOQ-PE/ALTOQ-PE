@@ -3,7 +3,7 @@
     {
       "id": "usr_c8192a4f_min_gold",
       "email": "consumidormin@gmail.com",
-      "passwordHash": "hash_123",
+      "passwordHash": "hash_123456",
       "role": "CONSUMER_RETAIL",
       "firstName": "Carlos",
       "lastName": "Mendoza Vega",
@@ -19,7 +19,7 @@
     {
       "id": "usr_d4710b9c_min_free",
       "email": "consumidormingratis@gmail.com",
-      "passwordHash": "hash_123",
+      "passwordHash": "hash_123456",
       "role": "CONSUMER_RETAIL",
       "firstName": "Andrea",
       "lastName": "Rodríguez Chumpitaz",
@@ -35,7 +35,7 @@
     {
       "id": "usr_f9283e1a_wholesale",
       "email": "consumidormay@gmail.com",
-      "passwordHash": "hash_123",
+      "passwordHash": "hash_123456",
       "role": "CONSUMER_WHOLESALE",
       "firstName": "Mariana",
       "lastName": "Quispe Arrunátegui",
@@ -53,7 +53,7 @@
     {
       "id": "usr_e1094c3d_producer",
       "email": "proveedor@gmail.com",
-      "passwordHash": "hash_123",
+      "passwordHash": "hash_123456",
       "role": "PRODUCER",
       "firstName": "Roberto",
       "lastName": "Huamán Cárdenas",
@@ -75,7 +75,7 @@
     {
       "id": "usr_a0481f7e_superadmin",
       "email": "superadmin@gmail.com",
-      "passwordHash": "hash_123",
+      "passwordHash": "hash_123456",
       "role": "SUPERADMIN",
       "firstName": "Dirección Operaciones",
       "lastName": "ALTOQ PE",

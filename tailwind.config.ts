@@ -28,7 +28,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['Plus Jakarta Sans', 'Montserrat', 'sans-serif'],
+        sans: ['var(--font-base)', 'Plus Jakarta Sans', 'Montserrat', 'sans-serif'],
+        display: ['var(--font-display)', 'Montserrat', 'Plus Jakarta Sans', 'sans-serif'],
       },
       borderRadius: {
         'brand-sm': '8px',

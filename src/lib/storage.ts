@@ -70,13 +70,13 @@ interface DatabaseContent {
   quotes: WholesaleQuote[];
 }
 
-// Inicializar base de datos con usuarios y datos reales de cada tipo
+// Inicializar base de datos con usuarios y datos reales de cada tipo (Contraseña: 123456)
 const DEFAULT_DB: DatabaseContent = {
   users: [
     {
       id: 'usr_c8192a4f_min_gold',
       email: 'consumidormin@gmail.com',
-      passwordHash: 'hash_123',
+      passwordHash: 'hash_123456',
       role: 'CONSUMER_RETAIL',
       firstName: 'Carlos',
       lastName: 'Mendoza Vega',
@@ -92,7 +92,7 @@ const DEFAULT_DB: DatabaseContent = {
     {
       id: 'usr_d4710b9c_min_free',
       email: 'consumidormingratis@gmail.com',
-      passwordHash: 'hash_123',
+      passwordHash: 'hash_123456',
       role: 'CONSUMER_RETAIL',
       firstName: 'Andrea',
       lastName: 'Rodríguez Chumpitaz',
@@ -108,7 +108,7 @@ const DEFAULT_DB: DatabaseContent = {
     {
       id: 'usr_f9283e1a_wholesale',
       email: 'consumidormay@gmail.com',
-      passwordHash: 'hash_123',
+      passwordHash: 'hash_123456',
       role: 'CONSUMER_WHOLESALE',
       firstName: 'Mariana',
       lastName: 'Quispe Arrunátegui',
@@ -126,7 +126,7 @@ const DEFAULT_DB: DatabaseContent = {
     {
       id: 'usr_e1094c3d_producer',
       email: 'proveedor@gmail.com',
-      passwordHash: 'hash_123',
+      passwordHash: 'hash_123456',
       role: 'PRODUCER',
       firstName: 'Roberto',
       lastName: 'Huamán Cárdenas',
@@ -148,7 +148,7 @@ const DEFAULT_DB: DatabaseContent = {
     {
       id: 'usr_a0481f7e_superadmin',
       email: 'superadmin@gmail.com',
-      passwordHash: 'hash_123',
+      passwordHash: 'hash_123456',
       role: 'SUPERADMIN',
       firstName: 'Dirección Operaciones',
       lastName: 'ALTOQ PE',
@@ -175,8 +175,14 @@ function readDb(): DatabaseContent {
     if (fs.existsSync(DATA_FILE)) {
       const raw = fs.readFileSync(DATA_FILE, 'utf-8');
       const parsed = JSON.parse(raw);
+      const rawUsers: StoredUser[] = parsed.users && parsed.users.length > 0 ? parsed.users : DEFAULT_DB.users;
+      // Actualizar contraseñas heredadas a hash_123456
+      const users = rawUsers.map((u) => ({
+        ...u,
+        passwordHash: u.passwordHash === 'hash_123' ? 'hash_123456' : u.passwordHash,
+      }));
       const loaded: DatabaseContent = {
-        users: parsed.users && parsed.users.length > 0 ? parsed.users : DEFAULT_DB.users,
+        users,
         orders: parsed.orders || [],
         quotes: parsed.quotes || [],
       };
@@ -226,12 +232,21 @@ export const StorageService = {
     const matchByUsername = users.find((u) => u.email.toLowerCase().startsWith(username + '@'));
     if (matchByUsername) return matchByUsername;
 
-    // Aliases comunes
-    if (cleanEmail === 'admin@gmail.com' || cleanEmail === 'admin@altoq.pe' || cleanEmail === 'admin') {
+    // Aliases comunes y búsqueda flexible
+    if (['admin@gmail.com', 'admin@altoq.pe', 'admin', 'superadmin'].includes(cleanEmail)) {
       return users.find((u) => u.email === 'superadmin@gmail.com');
     }
-    if (cleanEmail === 'consumidor@gmail.com' || cleanEmail === 'consumidor@altoq.pe') {
+    if (['consumidor@gmail.com', 'consumidor@altoq.pe', 'consumidor', 'consumidormin'].includes(cleanEmail)) {
       return users.find((u) => u.email === 'consumidormin@gmail.com');
+    }
+    if (['consumidormingratis', 'gratis', 'consumidorgratis@gmail.com'].includes(cleanEmail)) {
+      return users.find((u) => u.email === 'consumidormingratis@gmail.com');
+    }
+    if (['mayorista', 'consumidormay', 'mayorista@gmail.com', 'mayorista@altoq.pe'].includes(cleanEmail)) {
+      return users.find((u) => u.email === 'consumidormay@gmail.com');
+    }
+    if (['proveedor', 'productor', 'productor@gmail.com', 'proveedor@altoq.pe'].includes(cleanEmail)) {
+      return users.find((u) => u.email === 'proveedor@gmail.com');
     }
     return undefined;
   },

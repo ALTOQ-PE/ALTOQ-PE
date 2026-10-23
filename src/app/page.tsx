@@ -52,7 +52,7 @@ function MarketplaceContent() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8F9F7]">
+    <div className="min-h-screen flex flex-col bg-[#F6F3EB]">
       {/* 1. Header Oficial Tipo Saga Falabella */}
       <MarketplaceNavbar />
 

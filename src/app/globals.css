@@ -3,17 +3,43 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #0F3D2E;
-  --color-secondary: #8BAA52;
-  --color-accent: #D85A2F;
-  --color-bg: #F6F3EB;
-  --color-surface: #FFFFFF;
-  --color-text-main: #14221D;
+  /* Paleta Oficial Extraída del Landing y Brand Guidelines */
+  --color-primary: #0F3D2E;         /* Verde Bosque Profundo */
+  --color-primary-light: #18523f;   /* Verde Bosque Intermedio */
+  --color-primary-dark: #0a291f;    /* Verde Bosque Oscuro */
+
+  --color-secondary: #8BAA52;       /* Verde Oliva / Hoja */
+  --color-secondary-light: #a4c468; /* Verde Oliva Claro */
+  --color-secondary-dark: #6f8a3e;  /* Verde Oliva Sombra */
+
+  --color-bg: #F6F3EB;              /* Crema Marfil Cálido (Fondo Principal) */
+  --color-surface: #FFFFFF;         /* Blanco Puro para Tarjetas */
+  --color-surface-soft: #EFECE3;    /* Crema Neutro Suave */
+
+  --color-accent: #D85A2F;          /* Naranja Terracota (CTA y Acentos) */
+  --color-accent-hover: #c04c23;    /* Terracota Interacción */
+  --color-accent-light: #fcece6;    /* Terracota Fondo Sutil */
+
+  --color-text-main: #14221D;       /* Texto Principal de Alto Contraste */
+  --color-text-muted: #52635B;      /* Texto Secundario y Descripciones */
+  --color-text-light: #83948C;      /* Textos Auxiliares y Metadatos */
+  --color-text-inverse: #FFFFFF;    /* Texto sobre fondos oscuros */
+
+  --color-border: rgba(15, 61, 46, 0.12);
+  --color-border-focus: rgba(216, 90, 47, 0.4);
+
+  --font-family-base: var(--font-base), 'Plus Jakarta Sans', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-display: var(--font-display), 'Plus Jakarta Sans', 'Montserrat', sans-serif;
 }
 
 body {
   color: var(--color-text-main);
   background-color: var(--color-bg);
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-family-base);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-display);
 }

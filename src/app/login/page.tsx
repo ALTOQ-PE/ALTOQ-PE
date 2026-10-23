@@ -77,6 +77,8 @@ function LoginFormContent() {
     planToSet: 'PLAN_GRATUITO' | 'PLAN_ORO',
     userIdToSet: string
   ) => {
+    setEmail(emailToLogin);
+    setPassword('123456');
     document.cookie = `altoq-user-role=${roleToSet}; path=/; max-age=86400`;
     document.cookie = `altoq-consumer-plan=${planToSet}; path=/; max-age=86400`;
     document.cookie = `altoq-session-token=sess-${userIdToSet}; path=/; max-age=86400`;
@@ -266,8 +268,8 @@ function LoginFormContent() {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full pl-9 pr-3 py-2.5 text-xs border border-gray-300 rounded-brand-md focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary bg-white"
+                      placeholder="123456"
+                      className="w-full pl-9 pr-3 py-2.5 text-xs border border-gray-300 rounded-brand-md focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary bg-white font-mono"
                     />
                   </div>
                 </div>
@@ -352,8 +354,9 @@ function LoginFormContent() {
                     <span>Superadmin (superadmin@gmail.com)</span>
                   </button>
 
-                  <div className="text-[11px] text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-1 rounded">
-                    Contraseña para todas las cuentas: <span className="font-mono text-sm text-[#0F3D2E]">123</span>
+                  <div className="text-[11px] text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2.5 py-1.5 rounded flex items-center space-x-1.5">
+                    <span>Contraseña para todas las cuentas:</span>
+                    <span className="font-mono text-xs font-black text-[#0F3D2E] bg-white px-1.5 py-0.5 rounded border border-emerald-300">123456</span>
                   </div>
                 </div>
               </div>
@@ -831,7 +834,7 @@ function LoginFormContent() {
                       <div>
                         <div className="flex justify-between items-center">
                           <h4 className="font-extrabold text-xs text-brand-primary">Plan Gratuito</h4>
-                          <span className="font-bold text-xs text-gray-700">S/ 0 / mes</span>
+                          <span className="font-bold text-xs text-gray-700">$0 / mes</span>
                         </div>
                         <ul className="text-[11px] text-gray-600 space-y-1.5 mt-3">
                           <li className="flex items-start space-x-1.5">
@@ -840,15 +843,15 @@ function LoginFormContent() {
                           </li>
                           <li className="flex items-start space-x-1.5">
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                            <span>Comparación de precios y proveedores</span>
+                            <span>Comparación de precios y productores</span>
                           </li>
                           <li className="flex items-start space-x-1.5">
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                            <span>Solicitud de cotizaciones</span>
+                            <span>Solicitud de cotizaciones mayoristas</span>
                           </li>
                           <li className="flex items-start space-x-1.5">
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                            <span>Alertas de nuevos productos y promociones</span>
+                            <span>Alertas de nuevos lotes y novedades</span>
                           </li>
                         </ul>
                       </div>
@@ -859,7 +862,7 @@ function LoginFormContent() {
                       </div>
                     </div>
 
-                    {/* Plan Oro */}
+                    {/* Plan Oro Comprador */}
                     <div
                       onClick={() => setSelectedPlan('PLAN_ORO')}
                       className={`p-4 rounded-brand-md border cursor-pointer transition-all flex flex-col justify-between relative ${
@@ -869,7 +872,7 @@ function LoginFormContent() {
                       }`}
                     >
                       <div className="absolute -top-2.5 right-3 bg-amber-500 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded-full shadow-sm">
-                        Recomendado
+                        Más Popular
                       </div>
                       <div>
                         <div className="flex justify-between items-center">
@@ -877,7 +880,7 @@ function LoginFormContent() {
                             <Star className="w-3.5 h-3.5 text-amber-600 fill-amber-500" />
                             <span>Plan Oro</span>
                           </h4>
-                          <span className="font-bold text-xs text-amber-950">S/ 14.90 / mes</span>
+                          <span className="font-bold text-xs text-amber-950">$15 / mes</span>
                         </div>
                         <ul className="text-[11px] text-amber-950 space-y-1.5 mt-3">
                           <li className="flex items-start space-x-1.5 font-semibold">
@@ -886,15 +889,7 @@ function LoginFormContent() {
                           </li>
                           <li className="flex items-start space-x-1.5">
                             <CheckCircle2 className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
-                            <span>Descuentos exclusivos (10% en catálogo)</span>
-                          </li>
-                          <li className="flex items-start space-x-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
-                            <span>Acceso anticipado a promociones seleccionadas</span>
-                          </li>
-                          <li className="flex items-start space-x-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
-                            <span>Historial de cotizaciones y consultas</span>
+                            <span>Descuento exclusivo del 10% en catálogo</span>
                           </li>
                           <li className="flex items-start space-x-1.5">
                             <CheckCircle2 className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
@@ -902,21 +897,124 @@ function LoginFormContent() {
                           </li>
                           <li className="flex items-start space-x-1.5">
                             <CheckCircle2 className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
-                            <span>Prioridad en la atención comercial</span>
-                          </li>
-                          <li className="flex items-start space-x-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
                             <span>Acumulación de Filipuntos para canjes</span>
                           </li>
                           <li className="flex items-start space-x-1.5">
                             <CheckCircle2 className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
-                            <span>Garantía de devolución con Altoq Créditos</span>
+                            <span>Garantía de devolución con ALTOQ Créditos</span>
+                          </li>
+                          <li className="flex items-start space-x-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
+                            <span>Prioridad en atención y despachos</span>
                           </li>
                         </ul>
                       </div>
                       <div className="mt-3 pt-2 border-t border-amber-200 text-center">
                         <span className={`text-[11px] font-bold ${selectedPlan === 'PLAN_ORO' ? 'text-amber-900' : 'text-gray-400'}`}>
                           {selectedPlan === 'PLAN_ORO' ? 'Seleccionado' : 'Elegir Plan Oro'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Paso 3: Selección de Suscripción para Proveedores Agroindustriales */}
+              {selectedRole === 'PRODUCER' && (
+                <div className="space-y-3 pt-2 border-t border-gray-100">
+                  <label className="block text-xs font-extrabold text-brand-primary uppercase tracking-wide">
+                    3. Elige tu Plan de Proveedor en ALTOQ PE:
+                  </label>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {/* Plan Plata Productor */}
+                    <div
+                      onClick={() => setProducerPlan('PLAN_PLATA')}
+                      className={`p-4 rounded-brand-md border cursor-pointer transition-all flex flex-col justify-between ${
+                        producerPlan === 'PLAN_PLATA'
+                          ? 'border-[#0F3D2E] bg-gray-50 ring-2 ring-[#0F3D2E]/20'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div>
+                        <div className="flex justify-between items-center">
+                          <h4 className="font-extrabold text-xs text-brand-primary">Plan Plata</h4>
+                          <span className="font-bold text-xs text-gray-700">$7 / mes</span>
+                        </div>
+                        <div className="text-[10px] font-bold text-emerald-700 mt-0.5">15 días de prueba gratis</div>
+                        <ul className="text-[11px] text-gray-600 space-y-1.5 mt-3">
+                          <li className="flex items-start space-x-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                            <span>Crear perfil empresarial de productor</span>
+                          </li>
+                          <li className="flex items-start space-x-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                            <span>Publicación de hasta 3 productos a la vez</span>
+                          </li>
+                          <li className="flex items-start space-x-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                            <span>Mostrar precios, presentaciones y fichas técnicas</span>
+                          </li>
+                          <li className="flex items-start space-x-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                            <span>Recepción de cotizaciones de compradores</span>
+                          </li>
+                        </ul>
+                      </div>
+                      <div className="mt-3 pt-2 border-t border-gray-200 text-center">
+                        <span className={`text-[11px] font-bold ${producerPlan === 'PLAN_PLATA' ? 'text-brand-primary' : 'text-gray-400'}`}>
+                          {producerPlan === 'PLAN_PLATA' ? 'Seleccionado' : 'Elegir Plan Plata'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Plan Oro Productor */}
+                    <div
+                      onClick={() => setProducerPlan('PLAN_ORO')}
+                      className={`p-4 rounded-brand-md border cursor-pointer transition-all flex flex-col justify-between relative ${
+                        producerPlan === 'PLAN_ORO'
+                          ? 'border-amber-500 bg-amber-50/50 ring-2 ring-amber-500/30'
+                          : 'border-gray-200 hover:border-amber-300'
+                      }`}
+                    >
+                      <div className="absolute -top-2.5 right-3 bg-amber-500 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded-full shadow-sm">
+                        Más Popular
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center">
+                          <h4 className="font-extrabold text-xs text-amber-950 flex items-center space-x-1">
+                            <Star className="w-3.5 h-3.5 text-amber-600 fill-amber-500" />
+                            <span>Plan Oro</span>
+                          </h4>
+                          <span className="font-bold text-xs text-amber-950">$15 / mes</span>
+                        </div>
+                        <div className="text-[10px] font-bold text-amber-800 mt-0.5">Acceso y publicación ilimitada</div>
+                        <ul className="text-[11px] text-amber-950 space-y-1.5 mt-3">
+                          <li className="flex items-start space-x-1.5 font-semibold">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
+                            <span>Todos los beneficios del Plan Plata</span>
+                          </li>
+                          <li className="flex items-start space-x-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
+                            <span>Publicación ilimitada de catálogo liofilizado</span>
+                          </li>
+                          <li className="flex items-start space-x-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
+                            <span>Promoción destacada en catálogo y campañas</span>
+                          </li>
+                          <li className="flex items-start space-x-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
+                            <span>Panel de control de stock y almacén en Lima</span>
+                          </li>
+                          <li className="flex items-start space-x-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
+                            <span>Soporte prioritario y asesoría técnica en empaque</span>
+                          </li>
+                        </ul>
+                      </div>
+                      <div className="mt-3 pt-2 border-t border-amber-200 text-center">
+                        <span className={`text-[11px] font-bold ${producerPlan === 'PLAN_ORO' ? 'text-amber-900' : 'text-gray-400'}`}>
+                          {producerPlan === 'PLAN_ORO' ? 'Seleccionado' : 'Elegir Plan Oro'}
                         </span>
                       </div>
                     </div>
