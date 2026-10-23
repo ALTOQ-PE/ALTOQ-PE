@@ -25,6 +25,7 @@ export const ProducerProductModal: React.FC = () => {
   const [ingredients, setIngredients] = useState('');
   const [digesaCode, setDigesaCode] = useState(currentUser?.digesaRegistryCode || 'RSA-P2409821-LIMA');
   const [octagonCount, setOctagonCount] = useState<number>(0);
+  const [octagonTypes, setOctagonTypes] = useState<string[]>([]);
   const [wholesaleCostPen, setWholesaleCostPen] = useState(12.5);
   const [publicPricePen, setPublicPricePen] = useState(22.0);
   const [wholesaleMoqUnits, setWholesaleMoqUnits] = useState(24);
@@ -34,6 +35,39 @@ export const ProducerProductModal: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState(false);
 
   if (!isProducerModalOpen) return null;
+
+  const handleSelectOctagonCount = (count: number) => {
+    setOctagonCount(count);
+    if (count === 0) {
+      setOctagonTypes([]);
+    } else if (count === 1) {
+      setOctagonTypes((prev) => (prev.length > 0 ? [prev[0]] : []));
+    } else if (count === 2) {
+      setOctagonTypes((prev) => prev.slice(0, 2));
+    }
+  };
+
+  const toggleOctagonType = (item: string) => {
+    if (octagonCount === 1) {
+      setOctagonTypes((prev) => (prev.includes(item) ? [] : [item]));
+      return;
+    }
+
+    if (octagonCount === 2) {
+      setOctagonTypes((prev) => {
+        if (prev.includes(item)) {
+          return prev.filter((o) => o !== item);
+        }
+        if (prev.length >= 2) {
+          return prev;
+        }
+        return [...prev, item];
+      });
+      return;
+    }
+
+    setOctagonTypes([]);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +83,14 @@ export const ProducerProductModal: React.FC = () => {
     }
     if (octagonCount > 2) {
       setErrorMessage('ALTOQ PE rechaza automáticamente alimentos con más de 2 octógonos (política estricta de salud).');
+      return;
+    }
+    if (octagonCount === 1 && octagonTypes.length !== 1) {
+      setErrorMessage('Has declarado 1 octógono. Selecciona cuál de los sellos aplica (Sodio, Azúcar o Grasas Saturadas).');
+      return;
+    }
+    if (octagonCount === 2 && octagonTypes.length !== 2) {
+      setErrorMessage(`Has declarado 2 octógonos. Debes seleccionar exactamente los 2 sellos aplicables (llevas ${octagonTypes.length} de 2).`);
       return;
     }
     if (!affidavitAccepted) {
@@ -85,7 +127,7 @@ export const ProducerProductModal: React.FC = () => {
       digesaCode,
       qualityCertificatesUrls: ['/certs/haccp-codex.pdf'],
       octagonCount,
-      octagonTypes: octagonCount === 1 ? ['ALTO_EN_SODIO'] : octagonCount === 2 ? ['ALTO_EN_SODIO', 'ALTO_EN_GRASAS_SATURADAS'] : [],
+      octagonTypes: octagonCount === 0 ? [] : octagonTypes,
       healthPolicyAccepted: true,
     };
 
@@ -242,7 +284,7 @@ export const ProducerProductModal: React.FC = () => {
           </div>
 
           {/* Conteo de Octógonos (Regla Estricta: Máximo 2) */}
-          <div className="p-3 bg-gray-50 border border-gray-200 rounded-brand-md space-y-2">
+          <div className="p-3 bg-gray-50 border border-gray-200 rounded-brand-md space-y-2.5">
             <label className="block font-bold text-brand-primary">
               Conteo de Octógonos Nutricionales (Ley 30021) *
             </label>
@@ -251,7 +293,7 @@ export const ProducerProductModal: React.FC = () => {
                 <button
                   key={num}
                   type="button"
-                  onClick={() => setOctagonCount(num)}
+                  onClick={() => handleSelectOctagonCount(num)}
                   className={`p-2 rounded border text-center font-bold transition-all ${
                     octagonCount === num
                       ? 'border-[#0F3D2E] bg-emerald-50 text-brand-primary ring-1 ring-[#0F3D2E]'
@@ -262,6 +304,60 @@ export const ProducerProductModal: React.FC = () => {
                 </button>
               ))}
             </div>
+
+            {octagonCount > 0 && (
+              <div className="space-y-2 p-2.5 rounded bg-amber-50/70 border border-amber-200">
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-bold text-amber-950 block">
+                    Selecciona los octógonos aplicables:
+                  </label>
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      octagonTypes.length === octagonCount
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                        : 'bg-amber-100 text-amber-800 border border-amber-300'
+                    }`}
+                  >
+                    {octagonTypes.length} de {octagonCount} seleccionado{octagonCount > 1 ? 's' : ''}
+                  </span>
+                </div>
+                <p className="text-[10px] text-amber-900/80">
+                  {octagonCount === 1
+                    ? 'Haz clic sobre el sello que corresponde (solo puedes elegir 1).'
+                    : 'Selecciona exactamente los 2 sellos que corresponden a tu producto.'}
+                </p>
+                <div className="flex flex-wrap gap-1.5 pt-0.5">
+                  {[
+                    { id: 'ALTO_EN_SODIO', label: 'ALTO EN SODIO' },
+                    { id: 'ALTO_EN_AZUCAR', label: 'ALTO EN AZÚCAR' },
+                    { id: 'ALTO_EN_GRASAS_SATURADAS', label: 'ALTO EN GRASAS SATURADAS' },
+                  ].map(({ id, label }) => {
+                    const isSelected = octagonTypes.includes(id);
+                    const isMaxReached = octagonCount === 2 && octagonTypes.length >= 2 && !isSelected;
+
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => toggleOctagonType(id)}
+                        className={`px-2.5 py-1 rounded-full text-[11px] font-bold border transition-all flex items-center gap-1 ${
+                          isSelected
+                            ? 'bg-black text-white border-black shadow-sm ring-1 ring-black/20'
+                            : isMaxReached
+                            ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-60'
+                            : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+                        }`}
+                        title={isMaxReached ? 'Ya alcanzaste el límite de 2 octógonos declarados' : undefined}
+                      >
+                        <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-[#D85A2F]' : 'bg-gray-300'}`} />
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             <p className="text-[11px] text-gray-400">
               Política ALTOQ PE: No se aceptan productos con 3 o más octógonos bajo ninguna circunstancia.
             </p>

@@ -79,10 +79,39 @@ export default function NuevoProductoPage() {
     );
   };
 
+  const handleSelectOctagonCount = (count: number) => {
+    setOctagonCount(count);
+    if (count === 0) {
+      setOctagonTypes([]);
+    } else if (count === 1) {
+      setOctagonTypes((prev) => (prev.length > 0 ? [prev[0]] : []));
+    } else if (count === 2) {
+      setOctagonTypes((prev) => prev.slice(0, 2));
+    }
+  };
+
   const toggleOctagonType = (item: string) => {
-    setOctagonTypes((prev) =>
-      prev.includes(item) ? prev.filter((o) => o !== item) : [...prev, item]
-    );
+    if (octagonCount === 1) {
+      // Si la cantidad declarada es 1:
+      // Si ya está seleccionado, lo desmarca. Si es otro, selecciona exclusivamente el nuevo.
+      setOctagonTypes((prev) => (prev.includes(item) ? [] : [item]));
+      return;
+    }
+
+    if (octagonCount === 2) {
+      setOctagonTypes((prev) => {
+        if (prev.includes(item)) {
+          return prev.filter((o) => o !== item);
+        }
+        if (prev.length >= 2) {
+          return prev;
+        }
+        return [...prev, item];
+      });
+      return;
+    }
+
+    setOctagonTypes([]);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -101,6 +130,16 @@ export default function NuevoProductoPage() {
 
     if (octagonCount > 2) {
       setErrorMessage('ALTOQ PE rechaza automáticamente alimentos con más de 2 octógonos (política estricta de salud).');
+      return;
+    }
+
+    if (octagonCount === 1 && octagonTypes.length !== 1) {
+      setErrorMessage('Has declarado 1 octógono. Selecciona cuál de los sellos aplica (Sodio, Azúcar o Grasas Saturadas).');
+      return;
+    }
+
+    if (octagonCount === 2 && octagonTypes.length !== 2) {
+      setErrorMessage(`Has declarado 2 octógonos. Debes seleccionar exactamente los 2 sellos aplicables (llevas ${octagonTypes.length} de 2).`);
       return;
     }
 
@@ -145,7 +184,7 @@ export default function NuevoProductoPage() {
       digesaCode,
       qualityCertificatesUrls: ['https://example.com/certificado-digesa.pdf'],
       octagonCount: Number(octagonCount),
-      octagonTypes: octagonCount === 0 ? [] : (octagonTypes.length > 0 ? (octagonTypes as any) : ['ALTO_EN_SODIO']),
+      octagonTypes: octagonCount === 0 ? [] : (octagonTypes as any),
       healthPolicyAccepted: true,
       rating: 5.0,
       reviewCount: 1,
@@ -443,7 +482,7 @@ export default function NuevoProductoPage() {
                   <button
                     key={num}
                     type="button"
-                    onClick={() => setOctagonCount(num)}
+                    onClick={() => handleSelectOctagonCount(num)}
                     className={`py-2 px-3 rounded-brand-md border text-xs font-bold transition-all text-center ${
                       octagonCount === num
                         ? 'bg-[#0F3D2E] text-white border-[#0F3D2E] shadow-sm'
@@ -457,25 +496,54 @@ export default function NuevoProductoPage() {
             </div>
 
             {octagonCount > 0 && (
-              <div className="sm:col-span-2 space-y-1.5 p-3 rounded-brand-md bg-amber-50/60 border border-amber-200">
-                <label className="text-xs font-bold text-amber-950 block">
-                  Selecciona los octógonos aplicables:
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {['ALTO_EN_SODIO', 'ALTO_EN_AZUCAR', 'ALTO_EN_GRASAS_SATURADAS'].map((type) => (
-                    <button
-                      key={type}
-                      type="button"
-                      onClick={() => toggleOctagonType(type)}
-                      className={`px-3 py-1 rounded-full text-xs font-bold border transition-colors ${
-                        octagonTypes.includes(type)
-                          ? 'bg-black text-white border-black'
-                          : 'bg-white text-gray-700 border-gray-300'
-                      }`}
-                    >
-                      {type.replace(/_/g, ' ')}
-                    </button>
-                  ))}
+              <div className="sm:col-span-2 space-y-2 p-3.5 rounded-brand-md bg-amber-50/70 border border-amber-200">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-amber-950 block">
+                    Selecciona los octógonos aplicables:
+                  </label>
+                  <span
+                    className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                      octagonTypes.length === octagonCount
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                        : 'bg-amber-100 text-amber-800 border border-amber-300'
+                    }`}
+                  >
+                    {octagonTypes.length} de {octagonCount} seleccionado{octagonCount > 1 ? 's' : ''}
+                  </span>
+                </div>
+                <p className="text-[11px] text-amber-900/80">
+                  {octagonCount === 1
+                    ? 'Haz clic sobre el sello que corresponde a tu producto (solo puedes elegir 1).'
+                    : 'Selecciona exactamente los 2 sellos que aplican a tu producto.'}
+                </p>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {[
+                    { id: 'ALTO_EN_SODIO', label: 'ALTO EN SODIO' },
+                    { id: 'ALTO_EN_AZUCAR', label: 'ALTO EN AZÚCAR' },
+                    { id: 'ALTO_EN_GRASAS_SATURADAS', label: 'ALTO EN GRASAS SATURADAS' },
+                  ].map(({ id, label }) => {
+                    const isSelected = octagonTypes.includes(id);
+                    const isMaxReached = octagonCount === 2 && octagonTypes.length >= 2 && !isSelected;
+
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => toggleOctagonType(id)}
+                        className={`px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all flex items-center gap-1.5 ${
+                          isSelected
+                            ? 'bg-black text-white border-black shadow-sm ring-2 ring-black/20'
+                            : isMaxReached
+                            ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-60'
+                            : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+                        }`}
+                        title={isMaxReached ? 'Ya alcanzaste el límite de 2 octógonos declarados' : undefined}
+                      >
+                        <span className={`w-2 h-2 rounded-full ${isSelected ? 'bg-[#D85A2F]' : 'bg-gray-300'}`} />
+                        {label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
